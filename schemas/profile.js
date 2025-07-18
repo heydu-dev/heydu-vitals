@@ -13,9 +13,9 @@ const InstitutionSchema = Joi.object({
         .allow(""),
     universityID: Joi.string().optional().allow(null).allow(""),
     profileImageBinary: Joi.binary().optional().allow(null).allow(""),
-    profileTypeID: Joi.string().valid("0", "1").required(),
+    profileTypeID: Joi.number().valid("0", "1").required(),
     institutionTypeID: Joi.string().required(),
-    roleID: Joi.string().required(),
+    roleID: Joi.number().required(),
 });
 
 const UpdateInstitutionSchema = Joi.object({
