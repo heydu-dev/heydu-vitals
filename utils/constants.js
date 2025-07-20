@@ -5,6 +5,14 @@ const USER_STATUS = {
     DELETED: "deleted",
 };
 
+const CIRCLE_TYPES = {
+    college: 'COLLEGE',
+    followers: 'FOLLOWERS',
+    everyone: 'EVERYONE',
+    class: 'CLASS'
+}
+
 module.exports = {
     USER_STATUS,
+    CIRCLE_TYPES
 };

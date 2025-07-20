@@ -4,18 +4,18 @@ const { userAction } = require("data-wolf");
 
 function skippingRoutes() {
     const SKIP_ROUTES = new Map();
-    SKIP_ROUTES.set("/api/auth/send-otp");
-    SKIP_ROUTES.set("/api/auth/register");
-    SKIP_ROUTES.set("/api/auth/validate-otp");
-    SKIP_ROUTES.set("/api/auth/logout");
+    SKIP_ROUTES.set("/auth/send-otp");
+    SKIP_ROUTES.set("/auth/register");
+    SKIP_ROUTES.set("/auth/validate-otp");
+    SKIP_ROUTES.set("/auth/logout");
     // SKIP_ROUTES.set("/api/admin/auth/send-otp");
     // SKIP_ROUTES.set("/api/admin/auth/validate-otp");
-    SKIP_ROUTES.set("/api/constant/degrees");
-    SKIP_ROUTES.set("/api/region/get-states");
+    SKIP_ROUTES.set("/utility/degrees");
+    SKIP_ROUTES.set("/utility/get-states");
     // SKIP_ROUTES.set("/api/region/get-countries");
-    SKIP_ROUTES.set("/api/region/get-visible-countries");
-    SKIP_ROUTES.set("/api/profile/list-universities");
-    SKIP_ROUTES.set("/api/constant/institution-types");
+    SKIP_ROUTES.set("/utility/get-visible-countries");
+    SKIP_ROUTES.set("/profile/list-universities");
+    SKIP_ROUTES.set("/utility/institution-types");
     return SKIP_ROUTES;
 }
 
