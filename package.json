@@ -1,6 +1,6 @@
 {
   "name": "heydu-vitals",
-  "version": "1.0.3",
+  "version": "1.0.9",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -11,7 +11,7 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "data-wolf": "^1.0.4",
+    "data-wolf": "^1.0.7",
     "ejs": "^3.1.10",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
