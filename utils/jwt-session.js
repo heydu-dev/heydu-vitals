@@ -45,11 +45,11 @@ module.exports = {
     },
 
     authenticateJWT(req, res, next) {
+        console.log(req.path);
         if (skippingRoutes().has(req.path)) {
             return next();
         }
         const token = req.headers.authorization;
-        console.log(token);
         if (!token) { return res.status(401).json({ message: "Authentication failed: Please login to access the apis" }); }
 
         return jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
