@@ -3,19 +3,20 @@ const jwt = require("jsonwebtoken");
 const { userAction } = require("data-wolf");
 
 function skippingRoutes() {
-    const SKIP_ROUTES = new Map();
-    SKIP_ROUTES.set("/auth/send-otp");
-    SKIP_ROUTES.set("/auth/register");
-    SKIP_ROUTES.set("/auth/validate-otp");
-    SKIP_ROUTES.set("/auth/logout");
-    // SKIP_ROUTES.set("/api/admin/auth/send-otp");
-    // SKIP_ROUTES.set("/api/admin/auth/validate-otp");
-    SKIP_ROUTES.set("/utility/degrees");
-    SKIP_ROUTES.set("/utility/get-states");
-    // SKIP_ROUTES.set("/api/region/get-countries");
-    SKIP_ROUTES.set("/utility/get-visible-countries");
-    SKIP_ROUTES.set("/profile/list-universities");
-    SKIP_ROUTES.set("/utility/institution-types");
+    const SKIP_ROUTES = [
+        "/send-otp",
+        "/register",
+        "/validate-otp",
+        "/logout",
+        // "/api/admin/auth/send-otp",
+        // "/api/admin/auth/validate-otp",
+        "/degrees",
+        "/get-states",
+        // "/api/region/get-countries",
+        "/get-visible-countries",
+        "/profile/list-universities",
+        "/institution-types"
+    ];
     return SKIP_ROUTES;
 }
 
@@ -46,7 +47,7 @@ module.exports = {
 
     authenticateJWT(req, res, next) {
         console.log(req.path);
-        if (skippingRoutes().has(req.path)) {
+        if (skippingRoutes().filter(route => req.path.includes(route)).length > 0) {
             return next();
         }
         const token = req.headers.authorization;
