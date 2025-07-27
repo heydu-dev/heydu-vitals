@@ -1,6 +1,6 @@
 {
   "name": "heydu-vitals",
-  "version": "1.0.9",
+  "version": "1.0.15",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -11,6 +11,8 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.850.0",
+    "@aws-sdk/s3-request-presigner": "^3.850.0",
     "data-wolf": "^1.0.7",
     "ejs": "^3.1.10",
     "joi": "^17.13.3",

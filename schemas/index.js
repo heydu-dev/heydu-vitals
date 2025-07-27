@@ -3,6 +3,7 @@ const { OTPSchema, ValidateOTPSchema } = require('./otp');
 const { DegreeSchema, InstitutionTypeSchema, ProfileTypeSchema, RoleSchema, CountrySchema } = require('./utility');
 const { StaffSchema, EditStaffSchema, StudentSchema, EditStudentSchema, FollowerSchema, GetFollowersSchema } = require('./user');
 const { DepartmentSchema, EditDepartmentSchema, SpecialisationSchema, EditSpecialisationSchema } = require("./batch")
+const { PostSchema, EditPostSchema, DeletePostSchema, GetPutObjectSignedUrlSchema, GetPostSchema, GetProfilePostSchema, LikePostSchema, GetLikedPostSchema, SavePostSchema, GetSavedPostSchema, PinPostSchema, GetPinnedPostSchema } = require("./post")
 
 module.exports = {
     InstitutionSchema,
@@ -23,5 +24,17 @@ module.exports = {
     DepartmentSchema,
     EditDepartmentSchema,
     SpecialisationSchema,
-    EditSpecialisationSchema
+    EditSpecialisationSchema,
+    PostSchema,
+    EditPostSchema,
+    DeletePostSchema,
+    GetPutObjectSignedUrlSchema,
+    GetPostSchema,
+    GetProfilePostSchema,
+    LikePostSchema,
+    GetLikedPostSchema,
+    SavePostSchema,
+    GetSavedPostSchema,
+    PinPostSchema,
+    GetPinnedPostSchema
 };

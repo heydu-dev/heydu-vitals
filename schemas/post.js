@@ -22,7 +22,6 @@ const PostSchema = Joi.object({
 });
 
 const EditPostSchema = Joi.object({
-    id: Joi.string().guid({ version: ["uuidv4", "uuidv5"] }).required(),
     description: Joi.string().max(300).allow("").allow(null),
     media: Joi.array().items({
         key: Joi.string().guid({ version: ["uuidv4", "uuidv5"] }).required(),
@@ -32,7 +31,84 @@ const EditPostSchema = Joi.object({
     isHidden: Joi.boolean().optional(),
 });
 
+const DeletePostSchema = Joi.object({
+    deletedByUserRoleID: Joi.number().required(),
+});
+
+const GetPutObjectSignedUrlSchema = Joi.object({
+    keys: Joi.array().items(Joi.object({
+        institutionID: Joi.number().required(),
+        profileTypeID: Joi.number().valid(0, 1, 2, 3).required(),
+        profileEmail: Joi.string().email().required(),
+        key: Joi.string().guid({ version: ["uuidv4", "uuidv5"] }).required(),
+    })).required().min(1),
+});
+
+const GetPostSchema = Joi.object({
+    profileUserID: Joi.string().guid({ version: ["uuidv4", "uuidv5"] }).required(),
+    limit: Joi.number().required().max(20),
+    lastEvaluatedKey: Joi.alternatives().try(Joi.object().unknown(true), Joi.allow(null)),
+    isFollowing: Joi.boolean(),
+    toFollowers: Joi.boolean(),
+    specialisationID: Joi.string().allow("*").when("specialisationYear", {
+        is: Joi.exist(),
+        then: Joi.string().allow("*").required(),
+    }),
+    specialisationYear: Joi.string().allow("*"),
+    institutionID: Joi.string(),
+});
+
+const GetProfilePostSchema = Joi.object({
+    profileUserID: Joi.string().guid({ version: ["uuidv4", "uuidv5"] }).required(),
+    viewProfileUserID: Joi.string().guid({ version: ["uuidv4", "uuidv5"] }).required(),
+    limit: Joi.number().required().max(20),
+    lastEvaluatedKey: Joi.alternatives().try(Joi.object().unknown(true), Joi.allow(null)),
+});
+
+const LikePostSchema = Joi.object({
+    postID: Joi.string().guid({ version: ["uuidv4", "uuidv5"] }).required(),
+    likedBy: Joi.string().email().required(),
+});
+
+const GetLikedPostSchema = Joi.object({
+    profileUserID: Joi.string().guid({ version: ["uuidv4", "uuidv5"] }).required(),
+    limit: Joi.number().required().max(20),
+    lastEvaluatedKey: Joi.alternatives().try(Joi.object().unknown(true), Joi.allow(null)),
+});
+
+const SavePostSchema = Joi.object({
+    postID: Joi.string().guid({ version: ["uuidv4", "uuidv5"] }).required(),
+    savedBy: Joi.string().email().required(),
+});
+
+const GetSavedPostSchema = Joi.object({
+    profileUserID: Joi.string().guid({ version: ["uuidv4", "uuidv5"] }).required(),
+    limit: Joi.number().required().max(20),
+    lastEvaluatedKey: Joi.alternatives().try(Joi.object().unknown(true), Joi.allow(null)),
+});
+
+const PinPostSchema = Joi.object({
+    postID: Joi.string().guid({ version: ["uuidv4", "uuidv5"] }).required(),
+    pinnedBy: Joi.string().email().required(),
+});
+
+const GetPinnedPostSchema = Joi.object({
+    institutionID: Joi.string().guid({ version: ["uuidv4", "uuidv5"] }).required(),
+    limit: Joi.number().required().max(20),
+    lastEvaluatedKey: Joi.alternatives().try(Joi.object().unknown(true), Joi.allow(null)),
+});
+
 module.exports = {
     PostSchema,
     EditPostSchema,
+    DeletePostSchema,
+    GetPutObjectSignedUrlSchema,
+    GetPostSchema,
+    GetProfilePostSchema,
+    LikePostSchema,
+    GetLikedPostSchema,
+    SavePostSchema,
+    GetSavedPostSchema,
+    PinPostSchema,
+    GetPinnedPostSchema
 };

@@ -3,6 +3,7 @@ const sendEmail = require('./send-email');
 const { USER_STATUS } = require('./constants');
 const { ErrorHandler } = require('./error-handler-middleware');
 const { generateJWT, authenticateJWT } = require('./jwt-session');
+const awsS3Helper = require('./aws-s3-helper');
 
 module.exports = {
     schemaCheck,
@@ -11,4 +12,5 @@ module.exports = {
     ErrorHandler,
     generateJWT,
     authenticateJWT,
+    awsS3Helper
 };
