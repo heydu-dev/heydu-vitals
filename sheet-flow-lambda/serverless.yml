@@ -1,0 +1,34 @@
+service: sheet-flow-lambda
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: ap-south-1
+  stage: ${opt:stage, dev}
+  environment:
+    S3BUCKET: heydu-${self:provider.stage}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - s3:GetObject
+            - s3:PutBucketNotification
+            - s3:GetBucketNotification
+          Resource:
+            - arn:aws:s3:::heydu-${self:provider.stage}/*
+
+functions:
+  s3Handler:
+    handler: functions/s3Handler.s3Handler
+    events:
+      - s3:
+          bucket: heydu-${self:provider.stage}
+          event: s3:ObjectCreated:*
+          existing: true
+          # rules:
+          #   - prefix: my-folder/
+          #   - suffix: .xlsx
+
+plugins:
+  - serverless-offline
