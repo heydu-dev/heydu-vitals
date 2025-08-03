@@ -4,7 +4,7 @@ provider:
   name: aws
   runtime: nodejs18.x
   region: ap-south-1
-  stage: ${opt:stage, dev}
+  stage: ${opt:stage, "dev"}
   environment:
     S3BUCKET: heydu-${self:provider.stage}
   iam:
@@ -20,15 +20,17 @@ provider:
 
 functions:
   s3Handler:
+    timeout: 120
+    memorySize: 2048
     handler: functions/s3Handler.s3Handler
     events:
       - s3:
           bucket: heydu-${self:provider.stage}
           event: s3:ObjectCreated:*
           existing: true
-          # rules:
-          #   - prefix: my-folder/
-          #   - suffix: .xlsx
+          rules:
+            # - prefix: my-folder/
+            - suffix: .xlsx
 
 plugins:
   - serverless-offline
