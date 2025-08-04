@@ -8,6 +8,7 @@ const InstitutionSchema = Joi.object({
     stateID: Joi.string().required(),
     address: Joi.string().required(),
     email: Joi.string().email().required(),
+    landmark: Joi.string().optional().allow(null),
     phone: Joi.string().pattern(/^[0-9]+$/, "numbers").required(),
     alternatePhone: Joi.string().pattern(/^[0-9]+$/, "numbers").optional().allow(null),
     universityID: Joi.string().optional().allow(null),
