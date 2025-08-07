@@ -7,6 +7,7 @@ provider:
   stage: ${opt:stage, "dev"}
   environment:
     S3BUCKET: heydu-${self:provider.stage}
+    REGION: ${self:provider.region}
   iam:
     role:
       statements:
@@ -17,6 +18,22 @@ provider:
             - s3:GetBucketNotification
           Resource:
             - arn:aws:s3:::heydu-${self:provider.stage}/*
+        - Effect: Allow
+          Action:
+            - s3:GetObject
+            - s3:PutBucketNotification
+            - s3:GetBucketNotification
+          Resource:
+            - arn:aws:s3:::heydu-${self:provider.stage}/*
+        - Effect: Allow
+          Action:
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:Query
+          Resource:
+            - arn:aws:dynamodb:${self:provider.region}:*:table/heydu-batch-${self:provider.stage}
+            - arn:aws:dynamodb:${self:provider.region}:*:table/heydu-user-${self:provider.stage}
 
 functions:
   s3Handler:
