@@ -9,6 +9,7 @@ module.exports = {
         roleID: Joi.number().required(),
         institutionID: Joi.string().required(),
         departmentID: Joi.string().required(),
+        specializationID: Joi.string().allow(null).allow(""),
         gender: Joi.string().trim().required(),
     }),
 
