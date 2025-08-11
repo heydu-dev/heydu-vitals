@@ -18,7 +18,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.850.0",
     "@aws-sdk/s3-request-presigner": "^3.850.0",
-    "data-wolf": "^1.0.31",
+    "data-wolf": "^1.0.33",
     "xlsx-parse-stream": "^1.1.0"
   },
   "devDependencies": {

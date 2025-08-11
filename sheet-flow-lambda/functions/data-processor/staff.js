@@ -1,10 +1,12 @@
 const { getRowValues } = require('../utility/excel');
 
-function mapStaffData(row, columns) {
-	const rowObject = getRowValues(row, columns);
-	return {
-		...rowObject,
-	};
+function mapStaffData(rows, columns) {
+	return rows.map((row) => {
+		const rowObject = getRowValues(row, columns);
+		return {
+			...rowObject,
+		};
+	});
 }
 
 module.exports = {
