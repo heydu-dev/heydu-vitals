@@ -60,10 +60,13 @@ async function processStudentData(rows, category, errors, excelFileID) {
 		);
 	} catch (error) {
 		console.error(`Error processing student data:`, error);
-		errors.push(`Error processing item: ${error.message}`);
+		errors.push({ error: `Error processing item: ${error.message}` });
 	} finally {
 		if (errors.length > 0) {
-			status = `Error: ${errors.join(', ')}`;
+			status = `Errors: ${errors.reduce(
+				(acc, item) => `${acc}${item.error} `,
+				'',
+			)}`;
 		}
 		// Update the batch data with the status
 		await batchAction.updateBatchDataByExcelFileID({
