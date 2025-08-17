@@ -8,6 +8,7 @@ provider:
   environment:
     S3BUCKET: heydu-${self:provider.stage}
     REGION: ${self:provider.region}
+    NODE_ENV: ${opt:stage, "dev"}
   iam:
     role:
       statements:
@@ -31,9 +32,12 @@ provider:
             - dynamodb:PutItem
             - dynamodb:UpdateItem
             - dynamodb:Query
+            - dynamodb:BatchWriteItem
           Resource:
             - arn:aws:dynamodb:${self:provider.region}:*:table/heydu-batch-${self:provider.stage}
             - arn:aws:dynamodb:${self:provider.region}:*:table/heydu-user-${self:provider.stage}
+            - arn:aws:dynamodb:${self:provider.region}:*:table/heydu-batch-${self:provider.stage}/index/*
+            - arn:aws:dynamodb:${self:provider.region}:*:table/heydu-user-${self:provider.stage}/index/*
 
 functions:
   s3Handler:

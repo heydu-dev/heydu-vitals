@@ -1,39 +1,14 @@
 const { batchAction, userAction } = require('data-wolf');
-const { getRowValues } = require('../utility/excel');
-
-async function processStudentData(rows, errors, excelFileID) {
-	let status = 'success';
-	try {
-		// TODO: Do I need to Add student id or will it be auto generated?
-		const res = await userAction.addStudentsBulk(rows);
-		console.log(
-			`Added ${res.length} students successfully.`,
-			JSON.stringify(res, null, 2),
-		);
-	} catch (error) {
-		errors.push(`Error processing item: ${error.message}`);
-	} finally {
-		if (errors.length > 0) {
-			status = `Error: ${errors.join(', ')}`;
-		}
-		// Update the batch data with the status
-
-		// TODO: is the update object correct?
-		await batchAction.updateBatchDataByExcelFileID({
-			excelFileID,
-			excelUploadStatusMessage: status,
-		});
-	}
-}
+const { v4: uuidv4 } = require('uuid');
+const { getRowValues, getCategoryColumnKeys } = require('../utility/excel');
 
 async function getBatchByExcelId(excelId) {
 	try {
 		if (!excelId) {
 			throw new Error('Excel ID is required');
 		}
-		// TODO: id is required, but this function does not have access to the batch id.
-		// Does this be provided in excel?
 		const Items = await batchAction.getBatchDataByExcelFileID(excelId);
+		console.log(`Fetched batch data for Excel ID ${excelId}:`, Items);
 		return Items[0] || null;
 	} catch (error) {
 		console.error(
@@ -50,6 +25,7 @@ function mapStudentData(rows, columns, batchData) {
 		// This will return an object with keys as column names and values as row values
 		const rowObject = getRowValues(row, columns);
 		return {
+			id: uuidv4(),
 			institutionID: batchData.institutionID,
 			departmentID: batchData.departmentID,
 			specializationID: batchData.specializationID,
@@ -59,9 +35,43 @@ function mapStudentData(rows, columns, batchData) {
 			batchID: batchData.id,
 			registrationNumber: rowObject.registration,
 			profileTypeID: 3,
+			specialisationID: batchData.specialisationID,
 			...rowObject,
 		};
 	});
+}
+
+async function processStudentData(rows, category, errors, excelFileID) {
+	let status = 'success';
+	let batchID = null;
+	try {
+		const batchData = await getBatchByExcelId(excelFileID);
+		const columnKeys = getCategoryColumnKeys(category);
+		batchID = batchData.id;
+		console.log(`Batch data for Excel ID ${excelFileID}:`, batchData);
+		const studentRows = await mapStudentData(rows, columnKeys, batchData);
+
+		console.log(`Mapped student rows:`, studentRows);
+		const res = await userAction.addStudentsBulk(studentRows);
+		// TODO: check unprocessed rows and write to errors
+		console.log(
+			`Added ${res.length} students successfully.`,
+			JSON.stringify(res, null, 2),
+		);
+	} catch (error) {
+		console.error(`Error processing student data:`, error);
+		errors.push(`Error processing item: ${error.message}`);
+	} finally {
+		if (errors.length > 0) {
+			status = `Error: ${errors.join(', ')}`;
+		}
+		// Update the batch data with the status
+		await batchAction.updateBatchDataByExcelFileID({
+			id: batchID,
+			excelFileID,
+			excelUploadStatusMessage: status,
+		});
+	}
 }
 
 module.exports = {

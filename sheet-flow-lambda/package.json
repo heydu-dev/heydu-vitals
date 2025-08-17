@@ -19,6 +19,7 @@
     "@aws-sdk/client-s3": "^3.850.0",
     "@aws-sdk/s3-request-presigner": "^3.850.0",
     "data-wolf": "^1.0.33",
+    "uuid": "^11.1.0",
     "xlsx-parse-stream": "^1.1.0"
   },
   "devDependencies": {

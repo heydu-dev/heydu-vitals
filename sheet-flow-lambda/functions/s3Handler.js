@@ -1,5 +1,4 @@
 const xlsx = require('xlsx-parse-stream');
-const { batchAction } = require('data-wolf');
 const { getUploadedFileDetails, getFileFromS3 } = require('./utility/s3');
 const {
 	getCategoryColumnKeys,
@@ -7,40 +6,42 @@ const {
 	validateRow,
 } = require('./utility/excel');
 const { getProcessorFileByCategory } = require('./data-processor/index');
-const { getBatchByExcelId } = require('./data-processor/students');
 
 async function processExcelData(rows, errors, category, excelFileID) {
-	const columnKeys = getCategoryColumnKeys(category);
 	const rowsWithoutErrors = rows.filter(
-		(row) => !errors.some((e) => e.index === row.index),
+		(_row, index) => !errors.some((e) => e.index === index),
 	);
 	if (rowsWithoutErrors.length === 0) {
 		console.log(`No valid rows to process for category: ${category}`);
 	}
-	if (errors) console.log(errors);
+	if (errors.length) console.log(errors);
 	const processor = getProcessorFileByCategory(category);
 	switch (category) {
 		case 'students': {
-			const batchData = await getBatchByExcelId(excelFileID);
-			const studentRows = await processor.mapStudentData(
-				rowsWithoutErrors,
-				columnKeys,
-				batchData,
-			);
+			console.log(`Processing student data`);
 			await processor.processStudentData(
-				studentRows,
+				rowsWithoutErrors,
+				category,
 				errors,
 				excelFileID,
 			);
 			break;
 		}
 		case 'staff': {
-			const staffRow = processor.mapStaffData(rows, columnKeys);
+			const columnKeys = getCategoryColumnKeys(category);
+			const staffRow = processor.mapStaffData(
+				rowsWithoutErrors,
+				columnKeys,
+			);
 			console.log(staffRow);
 			break;
 		}
 		case 'crap': {
-			const crapRow = processor.mapCrapData(rows, columnKeys);
+			const columnKeys = getCategoryColumnKeys(category);
+			const crapRow = processor.mapCrapData(
+				rowsWithoutErrors,
+				columnKeys,
+			);
 			console.log(crapRow);
 			break;
 		}
@@ -52,6 +53,11 @@ async function processExcelData(rows, errors, category, excelFileID) {
 
 module.exports.s3Handler = async (event) => {
 	console.log('Received event:', JSON.stringify(event, null, 2));
+	const df = [];
+	const errors = [];
+
+	let excelFileID = null;
+	let category = null;
 
 	await Promise.all(
 		event.Records.map(async (record) => {
@@ -61,9 +67,11 @@ module.exports.s3Handler = async (event) => {
 				institutionID,
 				filename,
 				extension,
-				category,
+				category: pathCategory,
 			} = getUploadedFileDetails(record.s3);
 			console.log(`Processing file: ${key} from bucket: ${bucket}`);
+
+			category = pathCategory;
 
 			console.log({
 				institutionID,
@@ -74,10 +82,9 @@ module.exports.s3Handler = async (event) => {
 
 			const response = await getFileFromS3(bucket, key);
 			const stream = response.Body;
-			const excelFileID = filename.split('.')[0];
+			excelFileID = filename.split('.')[0].trim();
 			let rowIndex = 0;
-			const df = [];
-			const errors = [];
+
 			await new Promise((resolve, reject) => {
 				stream
 					.pipe(xlsx())
@@ -96,23 +103,25 @@ module.exports.s3Handler = async (event) => {
 					})
 					.on('end', () => {
 						console.log(`Finished parsing ${key}`);
-						processExcelData(df, errors, category, excelFileID);
+
 						resolve();
 					})
 					.on('error', async (err) => {
-						try {
-							await batchAction.updateBatchDataByExcelFileID({
-								excelFileID: filename.split('.')[0],
-								excelUploadStatusMessage: err.message,
-							});
-						} catch (dbErr) {
-							console.error('Failed to log error to DB:', dbErr);
-						}
+						console.error(`Error processing file:`, err);
 						reject(err);
 					});
 			});
 		}),
 	);
+	try {
+		await processExcelData(df, errors, category, excelFileID);
+	} catch (err) {
+		console.error(`Error processing Excel data:`, err);
+		return {
+			statusCode: 500,
+			body: `Error processing file: ${err.message}`,
+		};
+	}
 
 	return {
 		statusCode: 200,
