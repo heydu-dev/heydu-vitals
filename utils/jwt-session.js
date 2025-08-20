@@ -54,24 +54,20 @@ module.exports = {
         if (!token) { return res.status(401).json({ message: "Authentication failed: Please login to access the apis" }); }
 
         return jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-            console.log("user", user)
             console.log(err)
-            if (err) { return res.status(403).json({ message: "JWT token verification is failed" }); }
+            if (err) { return res.status(403).json({ message: "Request is forbidden" }); }
             userAction.getByEmail(user.email)
                 .then((profile) => {
-                    console.log("profile", profile);
                     if (profile.length === 0) {
                         return res.status(404).json({
                             message: "User not registered with Heydu, please check",
                         });
                     }
-                    if (profile[0]?.profileTypeID == 0 || profile[0]?.profileTypeID == 1) {
+                    if ((profile[0]?.profileTypeID == 0 || profile[0]?.profileTypeID == 1)
+                        && ["rejected", "deleted", "pending"].includes(profile[0]?.status)) {
                         return statusBasedResponse(profile[0]?.status, res, next);
-                    } else if (profile[0]?.profileTypeID == 2 || profile[0]?.profileTypeID == 3 || profile[0]?.profileTypeID == 4) {
-                        next();
-                    } else {
-                        return res.status(403).json({ message: "You are not part of Heydu Organization." });
                     }
+                    next();
                 }).catch((err) => {
                     console.log(err);
                     res.status(500).json({ message: "Something went wrong" });

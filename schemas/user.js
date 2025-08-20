@@ -4,12 +4,11 @@ module.exports = {
     StaffSchema: Joi.object({
         name: Joi.string().trim().required(),
         email: Joi.string().trim().required(),
-        profileImageBinary: Joi.string().trim().allow(null).allow(""),
+        profileImageBinary: Joi.string().trim(),
         designation: Joi.string().trim().required(),
         roleID: Joi.number().required(),
         institutionID: Joi.string().required(),
         departmentID: Joi.string().required(),
-        specialisationID: Joi.string().allow(null).allow(""),
         gender: Joi.string().trim().required(),
     }),
 
