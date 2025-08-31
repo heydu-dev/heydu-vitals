@@ -1,4 +1,3 @@
-const { InstitutionSchema, UpdateInstitutionSchema } = require('./profile');
 const { OTPSchema, ValidateOTPSchema } = require('./otp');
 const {
 	DegreeSchema,
@@ -14,6 +13,9 @@ const {
 	EditStudentSchema,
 	FollowerSchema,
 	GetFollowersSchema,
+	InstitutionSchema,
+	UpdateInstitutionSchema,
+	GetInstitutionsSchema,
 } = require('./user');
 const { DepartmentSchema, SpecialisationSchema } = require('./batch');
 const {
@@ -34,6 +36,7 @@ const {
 module.exports = {
 	InstitutionSchema,
 	UpdateInstitutionSchema,
+	GetInstitutionsSchema,
 	OTPSchema,
 	ValidateOTPSchema,
 	DegreeSchema,
