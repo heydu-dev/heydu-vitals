@@ -106,7 +106,7 @@ const GetFollowingSchema = Joi.object({
 
 const GetInstitutionsSchema = Joi.object({
 	profileTypeID: Joi.number().required(),
-	filter: Joi.object().optional(),
+	filter: Joi.string().optional(),
 });
 
 module.exports = {
