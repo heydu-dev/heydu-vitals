@@ -13,7 +13,7 @@ const PostSchema = Joi.object({
     postUserTypeID: Joi.number().required(),
     postUserEmail: Joi.string().email().required(),
     postUserRoleID: Joi.number().required(),
-    institutionID: Joi.number().required(),
+    institutionID: Joi.string().guid({ version: ["uuidv4", "uuidv5"] }).required(),
     specialisationID: Joi.string().allow("*").when("specialisationYear", {
         is: Joi.exist(),
         then: Joi.string().allow("*").required().allow(null),
