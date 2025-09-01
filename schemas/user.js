@@ -109,7 +109,14 @@ const GetInstitutionsSchema = Joi.object({
 	filter: Joi.string().optional(),
 });
 
+const AdminSchema = Joi.object({
+	email: Joi.string().email().required(),
+	name: Joi.string().required(),
+	profileImageBinary: Joi.string().optional(),
+});
+
 module.exports = {
+	AdminSchema,
 	StaffSchema,
 	EditStaffSchema,
 	StudentSchema,

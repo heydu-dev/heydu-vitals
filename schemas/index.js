@@ -16,6 +16,7 @@ const {
 	InstitutionSchema,
 	UpdateInstitutionSchema,
 	GetInstitutionsSchema,
+	AdminSchema,
 } = require('./user');
 const { DepartmentSchema, SpecialisationSchema } = require('./batch');
 const {
@@ -64,4 +65,5 @@ module.exports = {
 	GetSavedPostSchema,
 	PinPostSchema,
 	GetPinnedPostSchema,
+	AdminSchema,
 };
