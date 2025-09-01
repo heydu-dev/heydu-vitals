@@ -53,7 +53,7 @@ const GetPutObjectSignedUrlSchema = Joi.object({
 	keys: Joi.array()
 		.items(
 			Joi.object({
-				institutionID: Joi.number().required(),
+				institutionID: Joi.string().required(),
 				profileTypeID: Joi.number().valid(0, 1, 2, 3).required(),
 				profileEmail: Joi.string().email().required(),
 				key: Joi.string()
