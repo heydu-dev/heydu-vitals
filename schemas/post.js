@@ -104,7 +104,9 @@ const LikePostSchema = Joi.object({
 	postID: Joi.string()
 		.guid({ version: ['uuidv4', 'uuidv5'] })
 		.required(),
-	likedBy: Joi.string().email().required(),
+	likedBy: Joi.string()
+		.guid({ version: ['uuidv4', 'uuidv5'] })
+		.required(),
 });
 
 const GetLikedPostSchema = Joi.object({
@@ -122,7 +124,9 @@ const SavePostSchema = Joi.object({
 	postID: Joi.string()
 		.guid({ version: ['uuidv4', 'uuidv5'] })
 		.required(),
-	savedBy: Joi.string().email().required(),
+	savedBy: Joi.string()
+		.guid({ version: ['uuidv4', 'uuidv5'] })
+		.required(),
 });
 
 const GetSavedPostSchema = Joi.object({
@@ -140,7 +144,9 @@ const PinPostSchema = Joi.object({
 	postID: Joi.string()
 		.guid({ version: ['uuidv4', 'uuidv5'] })
 		.required(),
-	pinnedBy: Joi.string().email().required(),
+	pinnedBy: Joi.string()
+		.guid({ version: ['uuidv4', 'uuidv5'] })
+		.required(),
 });
 
 const GetPinnedPostSchema = Joi.object({
