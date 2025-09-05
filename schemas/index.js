@@ -17,6 +17,7 @@ const {
 	UpdateInstitutionSchema,
 	GetInstitutionsSchema,
 	AdminSchema,
+	GetProfileKeySignedUrlsSchema,
 } = require('./user');
 const { DepartmentSchema, SpecialisationSchema } = require('./batch');
 const {
@@ -66,4 +67,5 @@ module.exports = {
 	PinPostSchema,
 	GetPinnedPostSchema,
 	AdminSchema,
+	GetProfileKeySignedUrlsSchema,
 };

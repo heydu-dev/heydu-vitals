@@ -19,7 +19,7 @@ const InstitutionSchema = Joi.object({
 		.optional()
 		.allow(null),
 	universityID: Joi.string().optional().allow(null),
-	profileImageBinary: Joi.binary().optional().allow(null),
+	profileImageURL: Joi.binary().optional().allow(null),
 	profileTypeID: Joi.number().valid(0, 1).required(),
 	institutionTypeID: Joi.string().required(),
 	roleID: Joi.number().required(),
@@ -46,7 +46,7 @@ const UpdateInstitutionSchema = Joi.object({
 const StaffSchema = Joi.object({
 	name: Joi.string().trim().required(),
 	email: Joi.string().trim().required(),
-	profileImageBinary: Joi.string().trim(),
+	profileImageURL: Joi.string().trim(),
 	designation: Joi.string().trim().required(),
 	roleID: Joi.number().required(),
 	institutionID: Joi.string().required(),
@@ -57,7 +57,7 @@ const StaffSchema = Joi.object({
 const EditStaffSchema = Joi.object({
 	name: Joi.string().trim().required(),
 	email: Joi.string().trim().required(),
-	profileImageBinary: Joi.string().trim().required(),
+	profileImageURL: Joi.string().trim().required(),
 	designation: Joi.string().trim().required(),
 	roleID: Joi.number().required(),
 });
@@ -83,6 +83,7 @@ const EditStudentSchema = Joi.object({
 	phone: Joi.string(),
 	stateID: Joi.string(),
 	countryCode: Joi.string(),
+	profileImageURL: Joi.string(),
 });
 
 const FollowerSchema = Joi.object({
@@ -112,7 +113,12 @@ const GetInstitutionsSchema = Joi.object({
 const AdminSchema = Joi.object({
 	email: Joi.string().email().required(),
 	name: Joi.string().required(),
-	profileImageBinary: Joi.string().optional(),
+	profileImageURL: Joi.string().optional(),
+});
+
+const GetProfileKeySignedUrlsSchema = Joi.object({
+	key: Joi.string().required(),
+	profileEmail: Joi.string().email().required(),
 });
 
 module.exports = {
@@ -127,4 +133,5 @@ module.exports = {
 	InstitutionSchema,
 	UpdateInstitutionSchema,
 	GetInstitutionsSchema,
+	GetProfileKeySignedUrlsSchema,
 };

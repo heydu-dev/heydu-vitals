@@ -7,10 +7,11 @@ const {
 } = require('@aws-sdk/client-s3');
 
 const awsS3folderList = {
-	0: 'institutions',
-	1: 'institutions',
+	0: 'institutions', // for universities
+	1: 'institutions', // for colleges
 	2: 'staff',
 	3: 'students',
+	profile: 'profile',
 };
 module.exports = {
 	createPutObjectPresignedUrlWithClient(profileTypeId, key) {
