@@ -41,7 +41,7 @@ module.exports = {
 				});
 				const command = new GetObjectCommand({
 					Bucket: process.env.S3_BUCKET,
-					Key: [0, 1, 2, 3].includes(profileTypeId)
+					Key: Object.keys(awsS3folderList).includes(profileTypeId)
 						? `${awsS3folderList[profileTypeId]}/${key}`
 						: key,
 				});
