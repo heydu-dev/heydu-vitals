@@ -46,8 +46,8 @@ function statusBasedResponse(status, res, next) {
 }
 
 module.exports = {
-	generateJWT(payload) {
-		return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '24h' });
+	generateJWT(payload, expiresIn = '24h') {
+		return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn });
 	},
 
 	authenticateJWT(req, res, next) {
@@ -62,22 +62,18 @@ module.exports = {
 		if (req.path.includes('renew-access-token')) {
 			tokenDetails = { token: req.body.refreshToken, type: 'refresh' };
 			if (!tokenDetails.token) {
-				return res
-					.status(401)
-					.json({
-						message:
-							'Refresh token is required to renew the access token',
-					});
+				return res.status(401).json({
+					message:
+						'Refresh token is required to renew the access token',
+				});
 			}
 		} else {
 			tokenDetails = { token: req.headers.authorization, type: 'access' };
 			if (!tokenDetails.token) {
-				return res
-					.status(401)
-					.json({
-						message:
-							'Authentication failed: Please login to access the apis',
-					});
+				return res.status(401).json({
+					message:
+						'Authentication failed: Please login to access the apis',
+				});
 			}
 		}
 
