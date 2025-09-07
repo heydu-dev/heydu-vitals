@@ -1,4 +1,4 @@
-const { OTPSchema, ValidateOTPSchema } = require('./otp');
+const { OTPSchema, ValidateOTPSchema, RefreshTokenSchema } = require('./otp');
 const {
 	DegreeSchema,
 	InstitutionTypeSchema,
@@ -68,4 +68,5 @@ module.exports = {
 	GetPinnedPostSchema,
 	AdminSchema,
 	GetProfileKeySignedUrlsSchema,
+	RefreshTokenSchema,
 };
