@@ -160,6 +160,32 @@ const GetPinnedPostSchema = Joi.object({
 	),
 });
 
+const CommentSchema = Joi.object({
+	description: Joi.string().max(300),
+	postID: Joi.string()
+		.guid({ version: ['uuidv4', 'uuidv5'] })
+		.required(),
+	commentingProfileUserID: Joi.string()
+		.guid({ version: ['uuidv4', 'uuidv5'] })
+		.required(),
+	commentingProfileTypeID: Joi.number().required(),
+	commentingProfileRoleID: Joi.number().required(),
+	parentCommentID: Joi.string()
+		.guid({ version: ['uuidv4', 'uuidv5'] })
+		.optional(),
+});
+
+const GetCommentsSchema = Joi.object({
+	postID: Joi.string()
+		.guid({ version: ['uuidv4', 'uuidv5'] })
+		.required(),
+	limit: Joi.number().required().max(20),
+	lastEvaluatedKey: Joi.alternatives().try(
+		Joi.object().unknown(true),
+		Joi.allow(null),
+	),
+});
+
 module.exports = {
 	PostSchema,
 	EditPostSchema,
@@ -173,4 +199,6 @@ module.exports = {
 	GetSavedPostSchema,
 	PinPostSchema,
 	GetPinnedPostSchema,
+	CommentSchema,
+	GetCommentsSchema,
 };

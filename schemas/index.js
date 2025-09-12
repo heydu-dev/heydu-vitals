@@ -33,6 +33,8 @@ const {
 	GetSavedPostSchema,
 	PinPostSchema,
 	GetPinnedPostSchema,
+	CommentSchema,
+	GetCommentsSchema,
 } = require('./post');
 
 module.exports = {
@@ -69,4 +71,6 @@ module.exports = {
 	AdminSchema,
 	GetProfileKeySignedUrlsSchema,
 	RefreshTokenSchema,
+	CommentSchema,
+	GetCommentsSchema,
 };
