@@ -35,6 +35,7 @@ const {
 	GetPinnedPostSchema,
 	CommentSchema,
 	GetCommentsSchema,
+	UpdateCommentSchema,
 } = require('./post');
 
 module.exports = {
@@ -73,4 +74,5 @@ module.exports = {
 	RefreshTokenSchema,
 	CommentSchema,
 	GetCommentsSchema,
+	UpdateCommentSchema,
 };

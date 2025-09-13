@@ -175,15 +175,19 @@ const CommentSchema = Joi.object({
 		.optional(),
 });
 
+const UpdateCommentSchema = Joi.object({
+	description: Joi.string().max(300),
+});
+
 const GetCommentsSchema = Joi.object({
-	postID: Joi.string()
-		.guid({ version: ['uuidv4', 'uuidv5'] })
-		.required(),
 	limit: Joi.number().required().max(20),
 	lastEvaluatedKey: Joi.alternatives().try(
 		Joi.object().unknown(true),
 		Joi.allow(null),
 	),
+	parentCommentID: Joi.string()
+		.guid({ version: ['uuidv4', 'uuidv5'] })
+		.optional(),
 });
 
 module.exports = {
@@ -201,4 +205,5 @@ module.exports = {
 	GetPinnedPostSchema,
 	CommentSchema,
 	GetCommentsSchema,
+	UpdateCommentSchema,
 };
