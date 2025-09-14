@@ -10,7 +10,7 @@ const InstitutionSchema = Joi.object({
 	stateID: Joi.string().required(),
 	address: Joi.string().required(),
 	email: Joi.string().email().required(),
-	landmark: Joi.string().optional().allow(null),
+	landmark: Joi.string().optional(),
 	phone: Joi.string()
 		.pattern(/^[0-9]+$/, 'numbers')
 		.required(),
@@ -18,8 +18,8 @@ const InstitutionSchema = Joi.object({
 		.pattern(/^[0-9]+$/, 'numbers')
 		.optional()
 		.allow(null),
-	universityID: Joi.string().optional().allow(null),
-	profileImageURL: Joi.binary().optional().allow(null),
+	universityID: Joi.string().optional(),
+	profileImageURL: Joi.binary().optional(),
 	profileTypeID: Joi.number().valid(0, 1).required(),
 	institutionTypeID: Joi.string().required(),
 	roleID: Joi.number().required(),
@@ -107,7 +107,7 @@ const GetFollowingSchema = Joi.object({
 
 const GetInstitutionsSchema = Joi.object({
 	profileTypeID: Joi.number().required(),
-	filter: Joi.string().optional(),
+	filters: Joi.string().optional(),
 });
 
 const AdminSchema = Joi.object({
