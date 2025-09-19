@@ -28,7 +28,6 @@ const InstitutionSchema = Joi.object({
 const UpdateInstitutionSchema = Joi.object({
 	name: Joi.string(),
 	description: Joi.string(),
-	shortName: Joi.string(),
 	countryCode: Joi.string(),
 	state: Joi.number(),
 	address: Joi.string(),
@@ -39,7 +38,8 @@ const UpdateInstitutionSchema = Joi.object({
 		.optional()
 		.allow(null),
 	landmark: Joi.string(),
-	profileImgBinary: Joi.binary().allow(null).allow(''),
+	profileTypeID: Joi.number().valid(0, 1).required(),
+	profileImageURL: Joi.binary().allow(null).allow(''),
 	status: Joi.string(),
 });
 

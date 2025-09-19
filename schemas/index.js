@@ -19,7 +19,11 @@ const {
 	AdminSchema,
 	GetProfileKeySignedUrlsSchema,
 } = require('./user');
-const { DepartmentSchema, SpecialisationSchema } = require('./batch');
+const {
+	DepartmentSchema,
+	SpecialisationSchema,
+	BatchSchema,
+} = require('./batch');
 const {
 	PostSchema,
 	EditPostSchema,
@@ -57,6 +61,7 @@ module.exports = {
 	GetFollowersSchema,
 	DepartmentSchema,
 	SpecialisationSchema,
+	BatchSchema,
 	PostSchema,
 	EditPostSchema,
 	DeletePostSchema,

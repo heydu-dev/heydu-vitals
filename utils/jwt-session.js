@@ -16,8 +16,9 @@ function skippingRoutes() {
 		'/get-states',
 		// "/api/region/get-countries",
 		'/get-visible-countries',
-		'/list-universities',
+		'/list-institutions',
 		'/institution-types',
+		'/list-institutions',
 	];
 	return SKIP_ROUTES;
 }
