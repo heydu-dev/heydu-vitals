@@ -1,5 +1,5 @@
 {
-  "name": "sheet-parser",
+  "name": "s3-sheet-data-processor",
   "version": "1.0.17",
   "description": "",
   "scripts": {
@@ -23,7 +23,6 @@
     "xlsx-parse-stream": "^1.1.0"
   },
   "devDependencies": {
-    "serverless": "^4.17.2",
     "serverless-offline": "^14.4.0"
   },
   "lint-staged": {

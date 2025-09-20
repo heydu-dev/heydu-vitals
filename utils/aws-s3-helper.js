@@ -24,7 +24,9 @@ module.exports = {
 		});
 		const command = new PutObjectCommand({
 			Bucket: process.env.S3_BUCKET,
-			Key: `${awsS3folderList[profileTypeId]}/${key}`,
+			Key: profileTypeId
+				? `${awsS3folderList[profileTypeId]}/${key}`
+				: key,
 			ContentType: 'image/jpeg',
 		});
 		return getSignedUrl(client, command, { expiresIn: 3600 });
@@ -45,9 +47,7 @@ module.exports = {
 						? `${awsS3folderList[profileTypeId]}/${key}`
 						: key,
 				});
-				const url = await getSignedUrl(client, command, {
-					expiresIn: 3600,
-				});
+				const url = await getSignedUrl(client, command);
 				resolve({ url, type });
 			} catch (e) {
 				reject(e);

@@ -28,7 +28,6 @@ function mapStudentData(rows, columns, batchData) {
 			id: uuidv4(),
 			institutionID: batchData.institutionID,
 			departmentID: batchData.departmentID,
-			specializationID: batchData.specializationID,
 			startYear: batchData.startYear,
 			finalYear: batchData.endYear,
 			degreeID: batchData.degreeID,

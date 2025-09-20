@@ -50,6 +50,7 @@ const StaffSchema = Joi.object({
 	designation: Joi.string().trim().required(),
 	roleID: Joi.number().required(),
 	institutionID: Joi.string().required(),
+	specialisationID: Joi.string().required(),
 	departmentID: Joi.string().required(),
 	gender: Joi.string().trim().required(),
 });

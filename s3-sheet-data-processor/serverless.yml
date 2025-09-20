@@ -1,4 +1,5 @@
-service: sheet-flow-lambda
+org: heydu
+service: s3-sheet-data-processor
 
 provider:
   name: aws
@@ -41,9 +42,10 @@ provider:
 
 functions:
   s3Handler:
+    name: ${self:org}-${self:service}-${self:provider.stage}
     timeout: 120
     memorySize: 2048
-    handler: functions/s3Handler.s3Handler
+    handler: s3Handler.s3Handler
     events:
       - s3:
           bucket: heydu-${self:provider.stage}
