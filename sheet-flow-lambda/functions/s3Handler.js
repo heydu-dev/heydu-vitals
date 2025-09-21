@@ -4,10 +4,18 @@ const {
 	getCategoryColumnKeys,
 	COLUMN_MAP,
 	validateRow,
+	CRAP_CATEGORIES_COLUMN_MAP,
 } = require('./utility/excel');
 const { getProcessorFileByCategory } = require('./data-processor/index');
 
-async function processExcelData(rows, errors, category, excelFileID) {
+async function processExcelData(
+	rows,
+	errors,
+	category,
+	excelFileID,
+	app,
+	version,
+) {
 	const rowsWithoutErrors = rows.filter(
 		(_row, index) => !errors.some((e) => e.index === index),
 	);
@@ -16,38 +24,46 @@ async function processExcelData(rows, errors, category, excelFileID) {
 	}
 	if (errors.length) console.log(errors);
 	const processor = getProcessorFileByCategory(category);
-	switch (category) {
-		case 'students': {
-			console.log(`Processing student data`);
-			await processor.processStudentData(
-				rowsWithoutErrors,
-				category,
-				errors,
-				excelFileID,
-			);
-			break;
+	if (app === 'heydu') {
+		switch (category) {
+			case 'students': {
+				console.log(`Processing student data`);
+				await processor.processStudentData(
+					rowsWithoutErrors,
+					category,
+					errors,
+					excelFileID,
+					app,
+					version,
+				);
+				break;
+			}
+			case 'staff': {
+				const columnKeys = getCategoryColumnKeys(
+					app,
+					category,
+					version,
+				);
+				const staffRow = processor.mapStaffData(
+					rowsWithoutErrors,
+					columnKeys,
+				);
+				console.log(staffRow);
+				break;
+			}
+			default: {
+				console.error(`Unknown category: ${category}`);
+			}
 		}
-		case 'staff': {
-			const columnKeys = getCategoryColumnKeys(category);
-			const staffRow = processor.mapStaffData(
-				rowsWithoutErrors,
-				columnKeys,
-			);
-			console.log(staffRow);
-			break;
-		}
-		case 'crap': {
-			const columnKeys = getCategoryColumnKeys(category);
-			const crapRow = processor.mapCrapData(
-				rowsWithoutErrors,
-				columnKeys,
-			);
-			console.log(crapRow);
-			break;
-		}
-		default: {
-			console.error(`Unknown category: ${category}`);
-		}
+	} else if (app === 'crap') {
+		await processor.processCrapData(
+			rowsWithoutErrors,
+			category,
+			errors,
+			excelFileID,
+			app,
+			version,
+		);
 	}
 }
 
@@ -58,6 +74,8 @@ module.exports.s3Handler = async (event) => {
 
 	let excelFileID = null;
 	let category = null;
+	let app = null;
+	let version = null;
 
 	await Promise.all(
 		event.Records.map(async (record) => {
@@ -68,34 +86,41 @@ module.exports.s3Handler = async (event) => {
 				filename,
 				extension,
 				category: pathCategory,
+				app: appName,
+				version: fileVersion,
 			} = getUploadedFileDetails(record.s3);
 			console.log(`Processing file: ${key} from bucket: ${bucket}`);
 
 			category = pathCategory;
+			app = appName;
+			version = fileVersion;
 
 			console.log({
 				institutionID,
 				category,
 				filename,
 				extension,
+				app,
+				version,
 			});
 
 			const response = await getFileFromS3(bucket, key);
 			const stream = response.Body;
 			excelFileID = filename.split('.')[0].trim();
 			let rowIndex = 0;
-
+			let rules = {};
+			if (app === 'heydu') {
+				rules = COLUMN_MAP[category][version];
+			} else if (app === 'crap') {
+				rules = CRAP_CATEGORIES_COLUMN_MAP[category][version];
+			}
 			await new Promise((resolve, reject) => {
 				stream
 					.pipe(xlsx())
 					.on('data', (row) => {
 						rowIndex += 1;
 						df.push(row);
-						const error = validateRow(
-							row,
-							COLUMN_MAP[category],
-							rowIndex,
-						);
+						const error = validateRow(row, rules, rowIndex);
 						if (error) {
 							errors.push({ index: rowIndex - 1, error });
 						}
@@ -114,7 +139,7 @@ module.exports.s3Handler = async (event) => {
 		}),
 	);
 	try {
-		await processExcelData(df, errors, category, excelFileID);
+		await processExcelData(df, errors, category, excelFileID, app, version);
 	} catch (err) {
 		console.error(`Error processing Excel data:`, err);
 		return {

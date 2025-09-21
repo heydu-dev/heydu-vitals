@@ -28,7 +28,6 @@ function mapStudentData(rows, columns, batchData) {
 			id: uuidv4(),
 			institutionID: batchData.institutionID,
 			departmentID: batchData.departmentID,
-			specializationID: batchData.specializationID,
 			startYear: batchData.startYear,
 			finalYear: batchData.endYear,
 			degreeID: batchData.degreeID,
@@ -36,17 +35,26 @@ function mapStudentData(rows, columns, batchData) {
 			registrationNumber: rowObject.registration,
 			profileTypeID: 3,
 			specialisationID: batchData.specialisationID,
+			specialisationName: batchData.specialisationName,
+			departmentName: batchData.departmentName,
 			...rowObject,
 		};
 	});
 }
 
-async function processStudentData(rows, category, errors, excelFileID) {
+async function processStudentData(
+	rows,
+	category,
+	errors,
+	excelFileID,
+	app,
+	version,
+) {
 	let status = 'success';
 	let batchID = null;
 	try {
 		const batchData = await getBatchByExcelId(excelFileID);
-		const columnKeys = getCategoryColumnKeys(category);
+		const columnKeys = getCategoryColumnKeys(app, category, version);
 		batchID = batchData.id;
 		console.log(`Batch data for Excel ID ${excelFileID}:`, batchData);
 		const studentRows = await mapStudentData(rows, columnKeys, batchData);
