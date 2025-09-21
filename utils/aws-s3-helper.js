@@ -14,7 +14,7 @@ const awsS3folderList = {
 	profile: 'profile',
 };
 module.exports = {
-	createPutObjectPresignedUrlWithClient(profileTypeId, key) {
+	createPutObjectPresignedUrlWithClient(profileTypeID, key) {
 		const client = new S3Client({
 			region: process.env.REGION,
 			credentials: {
@@ -24,14 +24,14 @@ module.exports = {
 		});
 		const command = new PutObjectCommand({
 			Bucket: process.env.S3_BUCKET,
-			Key: profileTypeId
-				? `${awsS3folderList[profileTypeId]}/${key}`
+			Key: awsS3folderList[profileTypeID]
+				? `${awsS3folderList[profileTypeID]}/${key}`
 				: key,
 			ContentType: 'image/jpeg',
 		});
 		return getSignedUrl(client, command, { expiresIn: 3600 });
 	},
-	createGetObjectPresignedUrlWithClient(profileTypeId, key, type) {
+	createGetObjectPresignedUrlWithClient(profileTypeID, key, type) {
 		return new Promise(async (resolve, reject) => {
 			try {
 				const client = new S3Client({
@@ -43,8 +43,8 @@ module.exports = {
 				});
 				const command = new GetObjectCommand({
 					Bucket: process.env.S3_BUCKET,
-					Key: Object.keys(awsS3folderList).includes(profileTypeId)
-						? `${awsS3folderList[profileTypeId]}/${key}`
+					Key: Object.keys(awsS3folderList).includes(profileTypeID)
+						? `${awsS3folderList[profileTypeID]}/${key}`
 						: key,
 				});
 				const url = await getSignedUrl(client, command);

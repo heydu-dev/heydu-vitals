@@ -24,8 +24,17 @@ const BatchSchema = Joi.object({
 	actualExcelFileName: Joi.string().required(),
 });
 
+const GetBatchSchema = Joi.object({
+	limit: Joi.number().required().max(10),
+	lastEvaluatedKey: Joi.alternatives().try(
+		Joi.object().unknown(true),
+		Joi.allow(null),
+	),
+});
+
 module.exports = {
 	DepartmentSchema,
 	SpecialisationSchema,
 	BatchSchema,
+	GetBatchSchema,
 };

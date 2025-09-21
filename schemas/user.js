@@ -56,11 +56,13 @@ const StaffSchema = Joi.object({
 });
 
 const EditStaffSchema = Joi.object({
-	name: Joi.string().trim().required(),
-	email: Joi.string().trim().required(),
-	profileImageURL: Joi.string().trim().required(),
-	designation: Joi.string().trim().required(),
-	roleID: Joi.number().required(),
+	name: Joi.string().trim(),
+	email: Joi.string().trim(),
+	profileImageURL: Joi.string().trim(),
+	designation: Joi.string().trim(),
+	departmentID: Joi.string().trim(),
+	specialisationID: Joi.string().trim(),
+	roleID: Joi.number(),
 });
 
 const StudentSchema = Joi.object({
@@ -82,6 +84,7 @@ const EditStudentSchema = Joi.object({
 	name: Joi.string(),
 	alternateEmail: Joi.string(),
 	phone: Joi.string(),
+	registrationNumber: Joi.string(),
 	stateID: Joi.string(),
 	countryCode: Joi.string(),
 	profileImageURL: Joi.string(),
@@ -122,6 +125,14 @@ const GetProfileKeySignedUrlsSchema = Joi.object({
 	profileEmail: Joi.string().email().required(),
 });
 
+const GetStudentsByBatchIDSchema = Joi.object({
+	limit: Joi.number().required().max(10),
+	lastEvaluatedKey: Joi.alternatives().try(
+		Joi.object().unknown(true),
+		Joi.allow(null),
+	),
+});
+
 module.exports = {
 	AdminSchema,
 	StaffSchema,
@@ -135,4 +146,5 @@ module.exports = {
 	UpdateInstitutionSchema,
 	GetInstitutionsSchema,
 	GetProfileKeySignedUrlsSchema,
+	GetStudentsByBatchIDSchema,
 };

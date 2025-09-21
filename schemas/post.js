@@ -22,13 +22,12 @@ const PostSchema = Joi.object({
 		.guid({ version: ['uuidv4', 'uuidv5'] })
 		.required(),
 	specialisationID: Joi.string()
-		.allow('*')
 		.when('specialisationYear', {
 			is: Joi.exist(),
 			then: Joi.string().allow('*').required().allow(null),
 		})
-		.allow(''),
-	specialisationYear: Joi.string().allow(null).allow(''),
+		.optional(),
+	specialisationYear: Joi.string().optional(),
 });
 
 const EditPostSchema = Joi.object({
@@ -67,7 +66,7 @@ const GetPutObjectSignedUrlSchema = Joi.object({
 
 const GetPostSchema = Joi.object({
 	profileUserID: Joi.string().guid({ version: ['uuidv4', 'uuidv5'] }),
-	limit: Joi.number().required().max(20),
+	limit: Joi.number().required().max(10),
 	lastEvaluatedKey: Joi.alternatives().try(
 		Joi.object().unknown(true),
 		Joi.allow(null),
@@ -91,7 +90,7 @@ const GetProfilePostSchema = Joi.object({
 	viewProfileUserID: Joi.string()
 		.guid({ version: ['uuidv4', 'uuidv5'] })
 		.required(),
-	limit: Joi.number().required().max(20),
+	limit: Joi.number().required().max(10),
 	lastEvaluatedKey: Joi.alternatives().try(
 		Joi.object().unknown(true),
 		Joi.allow(null),
@@ -111,7 +110,7 @@ const GetLikedPostSchema = Joi.object({
 	profileUserID: Joi.string()
 		.guid({ version: ['uuidv4', 'uuidv5'] })
 		.required(),
-	limit: Joi.number().required().max(20),
+	limit: Joi.number().required().max(10),
 	lastEvaluatedKey: Joi.alternatives().try(
 		Joi.object().unknown(true),
 		Joi.allow(null),
@@ -131,7 +130,7 @@ const GetSavedPostSchema = Joi.object({
 	profileUserID: Joi.string()
 		.guid({ version: ['uuidv4', 'uuidv5'] })
 		.required(),
-	limit: Joi.number().required().max(20),
+	limit: Joi.number().required().max(10),
 	lastEvaluatedKey: Joi.alternatives().try(
 		Joi.object().unknown(true),
 		Joi.allow(null),
@@ -151,7 +150,7 @@ const GetPinnedPostSchema = Joi.object({
 	institutionID: Joi.string()
 		.guid({ version: ['uuidv4', 'uuidv5'] })
 		.required(),
-	limit: Joi.number().required().max(20),
+	limit: Joi.number().required().max(10),
 	lastEvaluatedKey: Joi.alternatives().try(
 		Joi.object().unknown(true),
 		Joi.allow(null),
@@ -178,7 +177,7 @@ const UpdateCommentSchema = Joi.object({
 });
 
 const GetCommentsSchema = Joi.object({
-	limit: Joi.number().required().max(20),
+	limit: Joi.number().required().max(10),
 	lastEvaluatedKey: Joi.alternatives().try(
 		Joi.object().unknown(true),
 		Joi.allow(null),

@@ -18,11 +18,13 @@ const {
 	GetInstitutionsSchema,
 	AdminSchema,
 	GetProfileKeySignedUrlsSchema,
+	GetStudentsByBatchIDSchema,
 } = require('./user');
 const {
 	DepartmentSchema,
 	SpecialisationSchema,
 	BatchSchema,
+	GetBatchSchema,
 } = require('./batch');
 const {
 	PostSchema,
@@ -62,6 +64,7 @@ module.exports = {
 	DepartmentSchema,
 	SpecialisationSchema,
 	BatchSchema,
+	GetBatchSchema,
 	PostSchema,
 	EditPostSchema,
 	DeletePostSchema,
@@ -80,4 +83,5 @@ module.exports = {
 	CommentSchema,
 	GetCommentsSchema,
 	UpdateCommentSchema,
+	GetStudentsByBatchIDSchema,
 };
