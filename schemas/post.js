@@ -65,7 +65,9 @@ const GetPutObjectSignedUrlSchema = Joi.object({
 });
 
 const GetPostSchema = Joi.object({
-	profileUserID: Joi.string().guid({ version: ['uuidv4', 'uuidv5'] }),
+	profileUserID: Joi.string()
+		.guid({ version: ['uuidv4', 'uuidv5'] })
+		.required(),
 	limit: Joi.number().required().max(10),
 	lastEvaluatedKey: Joi.alternatives().try(
 		Joi.object().unknown(true),

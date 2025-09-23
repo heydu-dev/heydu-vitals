@@ -92,21 +92,19 @@ const EditStudentSchema = Joi.object({
 
 const FollowerSchema = Joi.object({
 	followingID: Joi.string().required(), // ID of the user being followed (if applicable)
-	followingProfileTypeID: Joi.string().required(), // Profile type of the user being followed (if applicable)
+	followingProfileTypeID: Joi.number().required(), // Profile type of the user being followed (if applicable)
 	followerID: Joi.string().required(), // ID of the user following (if applicable)
-	followerProfileTypeID: Joi.string().required(), // Pr
+	followerProfileTypeID: Joi.number().required(), // Profile type of the user following (if applicable)
 });
 
-const GetFollowersSchema = Joi.object({
-	followingID: Joi.string().required(), // ID of the user being followed (if applicable)
-	limit: Joi.number().required(),
-	offset: Joi.number().required(),
-});
-
-const GetFollowingSchema = Joi.object({
-	followerID: Joi.string().required(), // ID of the user being followed (if applicable)
-	limit: Joi.number().required(),
-	offset: Joi.number().required(),
+const GetFollowersFollowingsSchema = Joi.object({
+	profileUserID: Joi.string().required(), // ID of the user being followed (if applicable)
+	followingProfileTypeID: Joi.number().required(), // Profile type of the user being followed (if applicable)
+	limit: Joi.number().max(10).required(),
+	lastEvaluatedKey: Joi.alternatives().try(
+		Joi.object().unknown(true),
+		Joi.allow(null),
+	),
 });
 
 const GetInstitutionsSchema = Joi.object({
@@ -140,8 +138,7 @@ module.exports = {
 	StudentSchema,
 	EditStudentSchema,
 	FollowerSchema,
-	GetFollowersSchema,
-	GetFollowingSchema,
+	GetFollowersFollowingsSchema,
 	InstitutionSchema,
 	UpdateInstitutionSchema,
 	GetInstitutionsSchema,
