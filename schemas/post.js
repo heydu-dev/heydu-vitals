@@ -21,13 +21,9 @@ const PostSchema = Joi.object({
 	institutionID: Joi.string()
 		.guid({ version: ['uuidv4', 'uuidv5'] })
 		.required(),
-	specialisationID: Joi.string()
-		.when('specialisationYear', {
-			is: Joi.exist(),
-			then: Joi.string().allow('*').required().allow(null),
-		})
-		.optional(),
-	specialisationYear: Joi.string().optional(),
+	specialisationID: Joi.string().optional(),
+	batchID: Joi.string().optional(),
+	departmentID: Joi.string().optional(),
 });
 
 const EditPostSchema = Joi.object({
@@ -65,23 +61,22 @@ const GetPutObjectSignedUrlSchema = Joi.object({
 });
 
 const GetPostSchema = Joi.object({
-	profileUserID: Joi.string()
-		.guid({ version: ['uuidv4', 'uuidv5'] })
-		.required(),
+	profileUserID: Joi.string().guid({ version: ['uuidv4', 'uuidv5'] }),
 	limit: Joi.number().required().max(10),
 	lastEvaluatedKey: Joi.alternatives().try(
 		Joi.object().unknown(true),
 		Joi.allow(null),
 	),
+	everyoneLastEvaluatedKey: Joi.alternatives().try(
+		Joi.object().unknown(true),
+		Joi.allow(null),
+	),
+	forClasses: Joi.boolean().optional(),
 	isFollowing: Joi.boolean(),
 	toFollowers: Joi.boolean(),
-	specialisationID: Joi.string()
-		.allow('*')
-		.when('specialisationYear', {
-			is: Joi.exist(),
-			then: Joi.string().allow('*').required(),
-		}),
-	specialisationYear: Joi.string().allow('*'),
+	departmentID: Joi.string().optional(),
+	specialisationID: Joi.string().optional(),
+	batchID: Joi.string().optional(),
 	institutionID: Joi.string(),
 });
 

@@ -25,6 +25,8 @@ const BatchSchema = Joi.object({
 });
 
 const GetBatchSchema = Joi.object({
+	departmentID: Joi.string().optional(),
+	specialisationID: Joi.string().optional(),
 	limit: Joi.number().required().max(10),
 	lastEvaluatedKey: Joi.alternatives().try(
 		Joi.object().unknown(true),

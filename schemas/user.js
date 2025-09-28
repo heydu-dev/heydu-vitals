@@ -1,5 +1,7 @@
 const Joi = require('joi');
 
+const uuidSchema = Joi.string().guid({ version: ['uuidv4', 'uuidv5'] });
+
 const InstitutionSchema = Joi.object({
 	name: Joi.string().required(),
 	description: Joi.string().required(),
@@ -131,6 +133,10 @@ const GetStudentsByBatchIDSchema = Joi.object({
 	),
 });
 
+const GetPostUsersSchema = Joi.object({
+	userIDs: Joi.array().items(uuidSchema).min(1).required(),
+});
+
 module.exports = {
 	AdminSchema,
 	StaffSchema,
@@ -144,4 +150,5 @@ module.exports = {
 	GetInstitutionsSchema,
 	GetProfileKeySignedUrlsSchema,
 	GetStudentsByBatchIDSchema,
+	GetPostUsersSchema,
 };

@@ -19,6 +19,7 @@ const {
 	AdminSchema,
 	GetProfileKeySignedUrlsSchema,
 	GetStudentsByBatchIDSchema,
+	GetPostUsersSchema,
 } = require('./user');
 const {
 	DepartmentSchema,
@@ -84,4 +85,5 @@ module.exports = {
 	GetCommentsSchema,
 	UpdateCommentSchema,
 	GetStudentsByBatchIDSchema,
+	GetPostUsersSchema,
 };
