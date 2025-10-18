@@ -2,13 +2,20 @@ const Joi = require('joi');
 
 const uuidSchema = Joi.string().guid({ version: ['uuidv4', 'uuidv5'] });
 
+const RegisterDeviceTokenSchema = Joi.object({
+	deviceToken: Joi.string().required(),
+	deviceType: Joi.string().required(),
+	userID: Joi.string().required(),
+	applicationID: Joi.string().required(),
+});
+
 const InstitutionSchema = Joi.object({
 	name: Joi.string().required(),
 	description: Joi.string().required(),
 	alias: Joi.string()
 		.pattern(/^[a-zA-Z0-9-_]+$/)
 		.required(),
-	countryCode: Joi.string().required(),
+	countryID: Joi.string().required(),
 	stateID: Joi.string().required(),
 	address: Joi.string().required(),
 	email: Joi.string().email().required(),
@@ -151,4 +158,5 @@ module.exports = {
 	GetProfileKeySignedUrlsSchema,
 	GetStudentsByBatchIDSchema,
 	GetPostUsersSchema,
+	RegisterDeviceTokenSchema,
 };

@@ -16,7 +16,6 @@ module.exports = {
 	ErrorHandler: (err, req, res) => {
 		const msg = `\n--------------------------------\npath: ${req.originalUrl}
         \nbody: ${JSON.stringify(req.body || {})}\n
-        methods: ${JSON.stringify(req.route.methods || {})}\n
         ${err.stack}\n--------------------------------`;
 		console.log(msg);
 

@@ -20,6 +20,7 @@ const {
 	GetProfileKeySignedUrlsSchema,
 	GetStudentsByBatchIDSchema,
 	GetPostUsersSchema,
+	RegisterDeviceTokenSchema,
 } = require('./user');
 const {
 	DepartmentSchema,
@@ -86,4 +87,5 @@ module.exports = {
 	UpdateCommentSchema,
 	GetStudentsByBatchIDSchema,
 	GetPostUsersSchema,
+	RegisterDeviceTokenSchema,
 };
