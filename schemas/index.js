@@ -46,6 +46,8 @@ const {
 	UpdateCommentSchema,
 } = require('./post');
 
+const { CrapSignupSchema, CrapQuestionsSchema } = require('./crap');
+
 module.exports = {
 	InstitutionSchema,
 	UpdateInstitutionSchema,
@@ -88,4 +90,6 @@ module.exports = {
 	GetStudentsByBatchIDSchema,
 	GetPostUsersSchema,
 	RegisterDeviceTokenSchema,
+	CrapSignupSchema,
+	CrapQuestionsSchema,
 };

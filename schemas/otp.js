@@ -2,17 +2,20 @@
 const Joi = require('joi');
 
 const OTPSchema = Joi.object({
-	email: Joi.string().email().required(),
+	email: Joi.string().email().trim().required(),
+	appType: Joi.string().optional(),
 });
 
 const ValidateOTPSchema = Joi.object({
-	email: Joi.string().email().required(),
-	otp: Joi.number().integer().required(),
+	email: Joi.string().email().trim().required(),
+	name: Joi.string().trim().optional(),
+	otp: Joi.string().trim().required(),
+	appType: Joi.string().optional(),
 });
 
 const RefreshTokenSchema = Joi.object({
-	refreshToken: Joi.string().required(),
-	email: Joi.string().email().required(),
+	refreshToken: Joi.string().trim().required(),
+	email: Joi.string().email().trim().required(),
 });
 
 module.exports = {
