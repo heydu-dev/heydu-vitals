@@ -34,9 +34,25 @@ const GetBatchSchema = Joi.object({
 	),
 });
 
+const AddSubjectSchema = Joi.object({
+	departmentID: Joi.string().required(),
+	specialisationID: Joi.string().required(),
+	batchID: Joi.string().required(),
+	semesterYear: Joi.string().required(),
+	tag: Joi.string().required(),
+	name: Joi.string().required(),
+});
+
+const AddClassMaterialSchema = Joi.object({
+	name: Joi.string().required(),
+	awsLink: Joi.string().required(),
+});
+
 module.exports = {
 	DepartmentSchema,
 	SpecialisationSchema,
 	BatchSchema,
 	GetBatchSchema,
+	AddSubjectSchema,
+	AddClassMaterialSchema,
 };

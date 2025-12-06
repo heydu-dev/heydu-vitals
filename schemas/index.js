@@ -27,6 +27,8 @@ const {
 	SpecialisationSchema,
 	BatchSchema,
 	GetBatchSchema,
+	AddSubjectSchema,
+	AddClassMaterialSchema,
 } = require('./batch');
 const {
 	PostSchema,
@@ -69,6 +71,8 @@ module.exports = {
 	SpecialisationSchema,
 	BatchSchema,
 	GetBatchSchema,
+	AddSubjectSchema,
+	AddClassMaterialSchema,
 	PostSchema,
 	EditPostSchema,
 	DeletePostSchema,
