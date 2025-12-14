@@ -34,18 +34,53 @@ const GetBatchSchema = Joi.object({
 	),
 });
 
-const AddSubjectSchema = Joi.object({
+const AddCourseSchema = Joi.object({
 	departmentID: Joi.string().required(),
 	specialisationID: Joi.string().required(),
 	batchID: Joi.string().required(),
 	semesterYear: Joi.string().required(),
-	tag: Joi.string().required(),
+	tag: Joi.string(),
 	name: Joi.string().required(),
 });
 
 const AddClassMaterialSchema = Joi.object({
-	name: Joi.string().required(),
-	awsLink: Joi.string().required(),
+	uploadedBy: Joi.string().required(),
+	materials: Joi.array()
+		.items(
+			Joi.object({
+				name: Joi.string().required(),
+				institutionID: Joi.string().required(),
+				fileExtension: Joi.string().required(),
+				courseID: Joi.string().required(),
+				batchID: Joi.string().required(),
+				year: Joi.string().required(),
+				key: Joi.string()
+					.guid({ version: ['uuidv4', 'uuidv5'] })
+					.required(),
+			}),
+		)
+		.required()
+		.min(1),
+});
+
+const GetCourseSchema = Joi.object({
+	departmentID: Joi.string().optional(),
+	specialisationID: Joi.string().optional(),
+	batchID: Joi.string().optional(),
+	semesterYear: Joi.string().optional(),
+	limit: Joi.number().required().max(10),
+	lastEvaluatedKey: Joi.alternatives().try(
+		Joi.object().unknown(true),
+		Joi.allow(null),
+	),
+});
+
+const GetClassMaterialSchema = Joi.object({
+	limit: Joi.number().required().max(10),
+	lastEvaluatedKey: Joi.alternatives().try(
+		Joi.object().unknown(true),
+		Joi.allow(null),
+	),
 });
 
 module.exports = {
@@ -53,6 +88,8 @@ module.exports = {
 	SpecialisationSchema,
 	BatchSchema,
 	GetBatchSchema,
-	AddSubjectSchema,
+	AddCourseSchema,
 	AddClassMaterialSchema,
+	GetCourseSchema,
+	GetClassMaterialSchema,
 };
