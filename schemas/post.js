@@ -71,6 +71,10 @@ const GetPostSchema = Joi.object({
 		Joi.object().unknown(true),
 		Joi.allow(null),
 	),
+	followersLastEvaluatedKey: Joi.alternatives().try(
+		Joi.object().unknown(true),
+		Joi.allow(null),
+	),
 	forClasses: Joi.boolean().optional(),
 	isFollowing: Joi.boolean(),
 	toFollowers: Joi.boolean(),

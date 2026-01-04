@@ -54,6 +54,7 @@ const AddClassMaterialSchema = Joi.object({
 				courseID: Joi.string().required(),
 				batchID: Joi.string().required(),
 				year: Joi.string().required(),
+				awsLink: Joi.string().required(),
 				key: Joi.string()
 					.guid({ version: ['uuidv4', 'uuidv5'] })
 					.required(),

@@ -14,50 +14,37 @@ const InstitutionSchema = Joi.object({
 	description: Joi.string().required(),
 	alias: Joi.string()
 		.pattern(/^[a-zA-Z0-9-_]+$/)
-		.required(),
+		.optional(),
 	countryID: Joi.string().required(),
 	stateID: Joi.string().required(),
-	address: Joi.string().required(),
-	email: Joi.string().email().required(),
-	landmark: Joi.string().optional(),
+	email: Joi.string().email().trim().lowercase().required(),
+	addressLineOne: Joi.string().optional(),
+	addressLineTwo: Joi.string().optional(),
 	phone: Joi.string()
 		.pattern(/^[0-9]+$/, 'numbers')
-		.required(),
-	alternatePhone: Joi.string()
-		.pattern(/^[0-9]+$/, 'numbers')
-		.optional()
-		.allow(null),
+		.optional(),
 	universityID: Joi.string().optional(),
-	profileImageURL: Joi.binary().optional(),
+	profileImageURL: Joi.string().optional(),
 	profileTypeID: Joi.number().valid(0, 1).required(),
 	institutionTypeID: Joi.string().required(),
-	roleID: Joi.number().required(),
 });
 
 const UpdateInstitutionSchema = Joi.object({
 	name: Joi.string(),
 	description: Joi.string(),
-	countryCode: Joi.string(),
-	state: Joi.number(),
-	address: Joi.string(),
-	email: Joi.string().email(),
-	contact: Joi.string().pattern(/^[0-9]+$/, 'numbers'),
-	alternateContact: Joi.string()
-		.pattern(/^[0-9]+$/, 'numbers')
-		.optional()
-		.allow(null),
-	landmark: Joi.string(),
+	phone: Joi.string().pattern(/^[0-9]+$/, 'numbers'),
+	addressLineOne: Joi.string(),
+	addressLineTwo: Joi.string(),
 	profileTypeID: Joi.number().valid(0, 1).required(),
-	profileImageURL: Joi.binary().allow(null).allow(''),
+	profileImageURL: Joi.string().allow(null).allow(''),
 	status: Joi.string(),
 });
 
 const StaffSchema = Joi.object({
 	name: Joi.string().trim().required(),
-	email: Joi.string().trim().required(),
+	email: Joi.string().email().trim().lowercase().required(),
 	profileImageURL: Joi.string().trim(),
 	designation: Joi.string().trim().required(),
-	roleID: Joi.number().required(),
 	institutionID: Joi.string().required(),
 	specialisationID: Joi.string().required(),
 	departmentID: Joi.string().required(),
@@ -66,11 +53,8 @@ const StaffSchema = Joi.object({
 
 const EditStaffSchema = Joi.object({
 	name: Joi.string().trim(),
-	email: Joi.string().trim(),
 	profileImageURL: Joi.string().trim(),
 	designation: Joi.string().trim(),
-	departmentID: Joi.string().trim(),
-	specialisationID: Joi.string().trim(),
 	roleID: Joi.number(),
 });
 
@@ -78,24 +62,21 @@ const StudentSchema = Joi.object({
 	name: Joi.string().required(),
 	startYear: Joi.date().iso().required(),
 	finalYear: Joi.date().iso().min(Joi.ref('start_year')).required(),
-	email: Joi.string().email().required(),
-	degreeID: Joi.number().required(),
-	departmentID: Joi.number().required(),
-	specializationID: Joi.number().required(),
-	institutionID: Joi.number().required(),
+	email: Joi.string().email().trim().lowercase().required(),
+	degreeID: Joi.string().required(),
+	departmentID: Joi.string().required(),
+	specializationID: Joi.string().required(),
+	institutionID: Joi.string().required(),
 	registrationNumber: Joi.string()
 		.pattern(/^[a-zA-Z0-9_.-]+$/) // Alphanumeric, underscore, dash, dot
 		.required(),
-	isAlumni: Joi.boolean(),
+	isAlumni: Joi.boolean().optional(),
 });
 
 const EditStudentSchema = Joi.object({
 	name: Joi.string(),
 	alternateEmail: Joi.string(),
 	phone: Joi.string(),
-	registrationNumber: Joi.string(),
-	stateID: Joi.string(),
-	countryCode: Joi.string(),
 	profileImageURL: Joi.string(),
 });
 

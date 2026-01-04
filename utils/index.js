@@ -9,6 +9,12 @@ const {
 } = require('./api-response-handler');
 const { generateJWT, authenticateJWT } = require('./jwt-session');
 const awsS3Helper = require('./aws-s3-helper');
+const {
+	MAX_FOLLOWER_SHARDS,
+	MAX_INSTITUTION_SHARDS,
+	FOLLOWER_SHARD_VERSION,
+	getShardNumber,
+} = require('./shard-utils');
 
 module.exports = {
 	schemaCheck,
@@ -22,4 +28,8 @@ module.exports = {
 	generateJWT,
 	authenticateJWT,
 	awsS3Helper,
+	MAX_FOLLOWER_SHARDS,
+	MAX_INSTITUTION_SHARDS,
+	FOLLOWER_SHARD_VERSION,
+	getShardNumber,
 };

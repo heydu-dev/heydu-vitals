@@ -103,6 +103,16 @@ module.exports = {
 							});
 						}
 						if (
+							req.path.includes('/update-institution') &&
+							profile.profileTypeID !== 4 &&
+							req.body.status
+						) {
+							return res.status(403).json({
+								message:
+									'You are not allowed to take this action on this profile',
+							});
+						}
+						if (
 							profile &&
 							(profile.profileTypeID === 0 ||
 								profile.profileTypeID === 1) &&

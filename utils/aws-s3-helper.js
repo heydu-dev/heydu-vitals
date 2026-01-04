@@ -14,7 +14,7 @@ const awsS3folderList = {
 	profile: 'profile',
 };
 module.exports = {
-	createPutObjectPresignedUrlWithClient(profileTypeID, key) {
+	createPutObjectPresignedUrlWithClient(s3Bucket, profileTypeID, key) {
 		const client = new S3Client({
 			region: process.env.REGION,
 			credentials: {
@@ -23,7 +23,7 @@ module.exports = {
 			},
 		});
 		const command = new PutObjectCommand({
-			Bucket: process.env.S3_BUCKET,
+			Bucket: s3Bucket || process.env.S3_BUCKET,
 			Key: awsS3folderList[profileTypeID]
 				? `${awsS3folderList[profileTypeID]}/${key}`
 				: key,
