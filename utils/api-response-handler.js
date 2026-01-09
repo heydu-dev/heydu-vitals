@@ -36,7 +36,9 @@ function createErrorResponse(
 ) {
 	const responseTemplate = getApiResponse(key, message ? { message } : {});
 	const error = new Error(responseTemplate.message);
-	error.statusCode = statusCode;
+	const resolvedStatusCode = statusCode || responseTemplate.httpStatus || 500;
+	error.statusCode = resolvedStatusCode;
+	error.status = resolvedStatusCode;
 	error.apiResponseKey = key;
 	error.code = responseTemplate.code;
 	error.message = responseTemplate.message;
@@ -47,6 +49,34 @@ function createErrorResponse(
 		error.stack = err.stack;
 	}
 	return error;
+}
+
+function sendErrorResponse(
+	res,
+	key,
+	{ message, details, statusCode } = {},
+	err = null,
+) {
+	const responseTemplate = getApiResponse(key, message ? { message } : {});
+	const resolvedStatusCode = statusCode || responseTemplate.httpStatus || 500;
+
+	const body = {
+		success: false,
+		status: resolvedStatusCode,
+		code: responseTemplate.code,
+		message: responseTemplate.message,
+	};
+
+	if (details !== undefined) {
+		body.details = details;
+	}
+
+	if (process.env.NODE_ENV === 'dev') {
+		const stackSource = err && err.stack ? err : new Error(body.message);
+		body.stack = stackSource.stack;
+	}
+
+	return res.status(resolvedStatusCode).json(body);
 }
 
 function resolveResponseKey(err, statusCode) {
@@ -61,7 +91,11 @@ function resolveResponseKey(err, statusCode) {
 	);
 }
 
-function ErrorHandler(err, req, res) {
+// Express error middleware must accept 4 args: (err, req, res, next)
+function ErrorHandler(err, req, res, next) {
+	if (res.headersSent) {
+		return next(err);
+	}
 	const msg = `\n--------------------------------\npath: ${req.originalUrl}
     \nbody: ${JSON.stringify(req.body || {})}\n
     ${err.stack}\n--------------------------------`;
@@ -84,6 +118,10 @@ function ErrorHandler(err, req, res) {
 		message: responsePayload.message,
 	};
 
+	if (err.details !== undefined) {
+		body.details = err.details;
+	}
+
 	if (process.env.NODE_ENV === 'dev') {
 		body.stack = err.stack;
 	}
@@ -95,5 +133,6 @@ module.exports = {
 	getApiResponse,
 	createSuccessResponse,
 	createErrorResponse,
+	sendErrorResponse,
 	ErrorHandler,
 };

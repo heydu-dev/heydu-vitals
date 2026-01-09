@@ -3,6 +3,7 @@
 /* eslint-disable default-case */
 const jwt = require('jsonwebtoken');
 const { userAction } = require('data-wolf');
+const { createErrorResponse } = require('./api-response-handler');
 
 function skippingRoutes() {
 	const SKIP_ROUTES = [
@@ -23,27 +24,23 @@ function skippingRoutes() {
 	return SKIP_ROUTES;
 }
 
+const STATUS = {
+	pending: 'Your profile is pending for approval, please wait for sometime',
+	rejected:
+		'Your profile is rejected, please contact support for further details',
+	deleted:
+		'Your profile is deleted, please contact support for further details',
+};
+
 // eslint-disable-next-line consistent-return
-function statusBasedResponse(status, res, next) {
-	switch (status) {
-		case 'deleted':
-			return res.status(400).json({
-				message:
-					'Your profile is deleted, please contact support for further details',
-			});
-		case 'rejected':
-			return res.status(400).json({
-				message:
-					'Your profile is rejected, please contact support for further details',
-			});
-		case 'pending':
-			return res.status(400).json({
-				message:
-					'Your profile is pending for approval, please wait for sometime',
-			});
-		case 'approved':
-			next();
+function statusBasedResponse(status) {
+	if (STATUS[status]) {
+		throw createErrorResponse('BAD_REQUEST', {
+			message: STATUS[status],
+			statusCode: 400,
+		});
 	}
+	return null;
 }
 
 module.exports = {
@@ -120,11 +117,7 @@ module.exports = {
 								profile.status,
 							)
 						) {
-							return statusBasedResponse(
-								profile.status,
-								res,
-								next,
-							);
+							statusBasedResponse(profile.status);
 						}
 						next();
 					})
@@ -138,4 +131,6 @@ module.exports = {
 			},
 		);
 	},
+
+	STATUS,
 };

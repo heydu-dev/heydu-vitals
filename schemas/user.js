@@ -46,7 +46,6 @@ const StaffSchema = Joi.object({
 	profileImageURL: Joi.string().trim(),
 	designation: Joi.string().trim().required(),
 	institutionID: Joi.string().required(),
-	specialisationID: Joi.string().required(),
 	departmentID: Joi.string().required(),
 	gender: Joi.string().trim().required(),
 });
