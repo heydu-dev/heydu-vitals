@@ -6,7 +6,7 @@ const PostSchema = Joi.object({
 	media: Joi.array()
 		.items({
 			key: Joi.string()
-				.guid({ version: ['uuidv4', 'uuidv5'] })
+				.guid({ version: ['uuidv5', 'uuidv7'] })
 				.required(),
 			rootFolder: Joi.string().valid('posts').required(),
 			type: Joi.string().valid('video', 'image').required(),
@@ -19,7 +19,7 @@ const PostSchema = Joi.object({
 	postUserEmail: Joi.string().email().required(),
 	postUserRoleID: Joi.number().required(),
 	institutionID: Joi.string()
-		.guid({ version: ['uuidv4', 'uuidv5'] })
+		.guid({ version: ['uuidv5', 'uuidv7'] })
 		.required(),
 	specialisationID: Joi.string().optional(),
 	batchID: Joi.string().optional(),
@@ -31,7 +31,7 @@ const EditPostSchema = Joi.object({
 	media: Joi.array()
 		.items({
 			key: Joi.string()
-				.guid({ version: ['uuidv4', 'uuidv5'] })
+				.guid({ version: ['uuidv5', 'uuidv7'] })
 				.required(),
 			rootFolder: Joi.string().valid('posts').required(),
 			type: Joi.string().valid('video', 'image').required(),
@@ -52,7 +52,7 @@ const GetPutObjectSignedUrlSchema = Joi.object({
 				profileTypeID: Joi.number().valid(0, 1, 2, 3).required(),
 				profileEmail: Joi.string().email().required(),
 				key: Joi.string()
-					.guid({ version: ['uuidv4', 'uuidv5'] })
+					.guid({ version: ['uuidv5', 'uuidv7'] })
 					.required(),
 			}),
 		)
@@ -61,7 +61,7 @@ const GetPutObjectSignedUrlSchema = Joi.object({
 });
 
 const GetPostSchema = Joi.object({
-	profileUserID: Joi.string().guid({ version: ['uuidv4', 'uuidv5'] }),
+	profileUserID: Joi.string().guid({ version: ['uuidv5', 'uuidv7'] }),
 	limit: Joi.number().required().max(10),
 	lastEvaluatedKey: Joi.alternatives().try(
 		Joi.object().unknown(true),
@@ -86,10 +86,10 @@ const GetPostSchema = Joi.object({
 
 const GetProfilePostSchema = Joi.object({
 	profileUserID: Joi.string()
-		.guid({ version: ['uuidv4', 'uuidv5'] })
+		.guid({ version: ['uuidv5', 'uuidv7'] })
 		.required(),
 	viewProfileUserID: Joi.string()
-		.guid({ version: ['uuidv4', 'uuidv5'] })
+		.guid({ version: ['uuidv5', 'uuidv7'] })
 		.required(),
 	limit: Joi.number().required().max(10),
 	lastEvaluatedKey: Joi.alternatives().try(
@@ -100,16 +100,16 @@ const GetProfilePostSchema = Joi.object({
 
 const LikePostSchema = Joi.object({
 	postID: Joi.string()
-		.guid({ version: ['uuidv4', 'uuidv5'] })
+		.guid({ version: ['uuidv5', 'uuidv7'] })
 		.required(),
 	likedBy: Joi.string()
-		.guid({ version: ['uuidv4', 'uuidv5'] })
+		.guid({ version: ['uuidv5', 'uuidv7'] })
 		.required(),
 });
 
 const GetLikedPostSchema = Joi.object({
 	profileUserID: Joi.string()
-		.guid({ version: ['uuidv4', 'uuidv5'] })
+		.guid({ version: ['uuidv5', 'uuidv7'] })
 		.required(),
 	limit: Joi.number().required().max(10),
 	lastEvaluatedKey: Joi.alternatives().try(
@@ -120,16 +120,16 @@ const GetLikedPostSchema = Joi.object({
 
 const SavePostSchema = Joi.object({
 	postID: Joi.string()
-		.guid({ version: ['uuidv4', 'uuidv5'] })
+		.guid({ version: ['uuidv5', 'uuidv7'] })
 		.required(),
 	savedBy: Joi.string()
-		.guid({ version: ['uuidv4', 'uuidv5'] })
+		.guid({ version: ['uuidv5', 'uuidv7'] })
 		.required(),
 });
 
 const GetSavedPostSchema = Joi.object({
 	profileUserID: Joi.string()
-		.guid({ version: ['uuidv4', 'uuidv5'] })
+		.guid({ version: ['uuidv5', 'uuidv7'] })
 		.required(),
 	limit: Joi.number().required().max(10),
 	lastEvaluatedKey: Joi.alternatives().try(
@@ -140,16 +140,16 @@ const GetSavedPostSchema = Joi.object({
 
 const PinPostSchema = Joi.object({
 	postID: Joi.string()
-		.guid({ version: ['uuidv4', 'uuidv5'] })
+		.guid({ version: ['uuidv5', 'uuidv7'] })
 		.required(),
 	pinnedBy: Joi.string()
-		.guid({ version: ['uuidv4', 'uuidv5'] })
+		.guid({ version: ['uuidv5', 'uuidv7'] })
 		.required(),
 });
 
 const GetPinnedPostSchema = Joi.object({
 	institutionID: Joi.string()
-		.guid({ version: ['uuidv4', 'uuidv5'] })
+		.guid({ version: ['uuidv5', 'uuidv7'] })
 		.required(),
 	limit: Joi.number().required().max(10),
 	lastEvaluatedKey: Joi.alternatives().try(
@@ -161,15 +161,15 @@ const GetPinnedPostSchema = Joi.object({
 const CommentSchema = Joi.object({
 	description: Joi.string().max(300),
 	postID: Joi.string()
-		.guid({ version: ['uuidv4', 'uuidv5'] })
+		.guid({ version: ['uuidv5', 'uuidv7'] })
 		.required(),
 	commentingProfileUserID: Joi.string()
-		.guid({ version: ['uuidv4', 'uuidv5'] })
+		.guid({ version: ['uuidv5', 'uuidv7'] })
 		.required(),
 	commentingProfileTypeID: Joi.number().required(),
 	commentingProfileRoleID: Joi.number().required(),
 	parentCommentID: Joi.string()
-		.guid({ version: ['uuidv4', 'uuidv5'] })
+		.guid({ version: ['uuidv5', 'uuidv7'] })
 		.optional(),
 });
 
@@ -184,7 +184,7 @@ const GetCommentsSchema = Joi.object({
 		Joi.allow(null),
 	),
 	parentCommentID: Joi.string()
-		.guid({ version: ['uuidv4', 'uuidv5'] })
+		.guid({ version: ['uuidv5', 'uuidv7'] })
 		.optional(),
 });
 

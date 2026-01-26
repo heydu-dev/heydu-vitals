@@ -13,9 +13,8 @@
  * - shardNumber is derived deterministically from the ID and maxShards.
  */
 
-const MAX_FOLLOWER_SHARDS = 1024;
+const MAX_FOLLOWER_SHARDS = 2048;
 const MAX_INSTITUTION_SHARDS = 16;
-const FOLLOWER_SHARD_VERSION = 'v1';
 
 // NOTE: Institutions/college/student/staff use normal (non-versioned) sharding.
 
@@ -59,7 +58,6 @@ function getShardNumber(id, maxShards) {
 module.exports = {
 	MAX_FOLLOWER_SHARDS,
 	MAX_INSTITUTION_SHARDS,
-	FOLLOWER_SHARD_VERSION,
 	hash32,
 	getShardNumber,
 };

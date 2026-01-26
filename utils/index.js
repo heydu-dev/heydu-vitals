@@ -13,7 +13,6 @@ const awsS3Helper = require('./aws-s3-helper');
 const {
 	MAX_FOLLOWER_SHARDS,
 	MAX_INSTITUTION_SHARDS,
-	FOLLOWER_SHARD_VERSION,
 	getShardNumber,
 } = require('./shard-utils');
 
@@ -33,6 +32,5 @@ module.exports = {
 	awsS3Helper,
 	MAX_FOLLOWER_SHARDS,
 	MAX_INSTITUTION_SHARDS,
-	FOLLOWER_SHARD_VERSION,
 	getShardNumber,
 };

@@ -1,6 +1,6 @@
 const Joi = require('joi');
 
-const uuidSchema = Joi.string().guid({ version: ['uuidv4', 'uuidv5'] });
+const uuidSchema = Joi.string().guid({ version: ['uuidv5', 'uuidv7'] });
 
 const RegisterDeviceTokenSchema = Joi.object({
 	deviceToken: Joi.string().required(),
@@ -24,7 +24,7 @@ const InstitutionSchema = Joi.object({
 		.pattern(/^[0-9]+$/, 'numbers')
 		.optional(),
 	universityID: Joi.string().optional(),
-	profileImageURL: Joi.string().optional(),
+	profileImageKey: Joi.string().optional(),
 	profileTypeID: Joi.number().valid(0, 1).required(),
 	institutionTypeID: Joi.string().required(),
 });
@@ -36,14 +36,14 @@ const UpdateInstitutionSchema = Joi.object({
 	addressLineOne: Joi.string(),
 	addressLineTwo: Joi.string(),
 	profileTypeID: Joi.number().valid(0, 1).required(),
-	profileImageURL: Joi.string().allow(null).allow(''),
+	profileImageKey: Joi.string().optional(),
 	status: Joi.string(),
 });
 
 const StaffSchema = Joi.object({
 	name: Joi.string().trim().required(),
 	email: Joi.string().email().trim().lowercase().required(),
-	profileImageURL: Joi.string().trim(),
+	profileImageKey: Joi.string().optional(),
 	designation: Joi.string().trim().required(),
 	institutionID: Joi.string().required(),
 	departmentID: Joi.string().required(),
@@ -52,7 +52,7 @@ const StaffSchema = Joi.object({
 
 const EditStaffSchema = Joi.object({
 	name: Joi.string().trim(),
-	profileImageURL: Joi.string().trim(),
+	profileImageKey: Joi.string().optional(),
 	designation: Joi.string().trim(),
 	roleID: Joi.number(),
 });
@@ -76,7 +76,7 @@ const EditStudentSchema = Joi.object({
 	name: Joi.string(),
 	alternateEmail: Joi.string(),
 	phone: Joi.string(),
-	profileImageURL: Joi.string(),
+	profileImageKey: Joi.string().optional(),
 });
 
 const FollowerSchema = Joi.object({
@@ -104,7 +104,7 @@ const GetInstitutionsSchema = Joi.object({
 const AdminSchema = Joi.object({
 	email: Joi.string().email().required(),
 	name: Joi.string().required(),
-	profileImageURL: Joi.string().optional(),
+	profileImageKey: Joi.string().optional(),
 });
 
 const GetProfileKeySignedUrlsSchema = Joi.object({
