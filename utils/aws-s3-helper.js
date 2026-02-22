@@ -12,6 +12,7 @@ const awsS3folderList = {
 	2: 'staff',
 	3: 'students',
 	profile: 'profile',
+	banner: 'banner',
 };
 module.exports = {
 	createPutObjectPresignedUrlWithClient(s3Bucket, profileTypeID, key) {
@@ -79,7 +80,7 @@ module.exports = {
 		);
 	},
 
-	createR2GetObjectPresignedUrl(profileTypeID, key, type) {
+	createR2GetObjectPresignedUrl(profileTypeID, key, type, r2Bucket) {
 		return new Promise(async (resolve, reject) => {
 			try {
 				const S3 = new S3Client({
@@ -93,7 +94,7 @@ module.exports = {
 				const url = await getSignedUrl(
 					S3,
 					new GetObjectCommand({
-						Bucket: process.env.R2_BUCKET,
+						Bucket: r2Bucket || process.env.R2_BUCKET,
 						Key: Object.keys(awsS3folderList).includes(
 							profileTypeID,
 						)
