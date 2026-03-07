@@ -77,6 +77,9 @@ const GetCourseSchema = Joi.object({
 });
 
 const GetClassMaterialSchema = Joi.object({
+	institutionID: Joi.string(),
+	batchID: Joi.string(),
+	year: Joi.string(),
 	limit: Joi.number().required().max(10),
 	lastEvaluatedKey: Joi.alternatives().try(
 		Joi.object().unknown(true),

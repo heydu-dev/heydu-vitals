@@ -25,6 +25,7 @@ const InstitutionSchema = Joi.object({
 		.optional(),
 	universityID: Joi.string().optional(),
 	profileImageKey: Joi.string().optional(),
+	bannerImageKey: Joi.string().optional(),
 	profileTypeID: Joi.number().valid(0, 1).required(),
 	institutionTypeID: Joi.string().required(),
 });
@@ -37,6 +38,7 @@ const UpdateInstitutionSchema = Joi.object({
 	addressLineTwo: Joi.string(),
 	profileTypeID: Joi.number().valid(0, 1).required(),
 	profileImageKey: Joi.string().optional(),
+	bannerImageKey: Joi.string().optional(),
 	status: Joi.string(),
 });
 
@@ -44,6 +46,7 @@ const StaffSchema = Joi.object({
 	name: Joi.string().trim().required(),
 	email: Joi.string().email().trim().lowercase().required(),
 	profileImageKey: Joi.string().optional(),
+	bannerImageKey: Joi.string().optional(),
 	designation: Joi.string().trim().required(),
 	institutionID: Joi.string().required(),
 	departmentID: Joi.string().required(),
@@ -53,6 +56,7 @@ const StaffSchema = Joi.object({
 const EditStaffSchema = Joi.object({
 	name: Joi.string().trim(),
 	profileImageKey: Joi.string().optional(),
+	bannerImageKey: Joi.string().optional(),
 	designation: Joi.string().trim(),
 	roleID: Joi.number(),
 });
@@ -66,6 +70,7 @@ const StudentSchema = Joi.object({
 	departmentID: Joi.string().required(),
 	specializationID: Joi.string().required(),
 	institutionID: Joi.string().required(),
+	bannerImageKey: Joi.string().optional(),
 	registrationNumber: Joi.string()
 		.pattern(/^[a-zA-Z0-9_.-]+$/) // Alphanumeric, underscore, dash, dot
 		.required(),
@@ -77,6 +82,7 @@ const EditStudentSchema = Joi.object({
 	alternateEmail: Joi.string(),
 	phone: Joi.string(),
 	profileImageKey: Joi.string().optional(),
+	bannerImageKey: Joi.string().optional(),
 });
 
 const FollowerSchema = Joi.object({
@@ -105,6 +111,7 @@ const AdminSchema = Joi.object({
 	email: Joi.string().email().required(),
 	name: Joi.string().required(),
 	profileImageKey: Joi.string().optional(),
+	bannerImageKey: Joi.string().optional(),
 });
 
 const GetProfileKeySignedUrlsSchema = Joi.object({
