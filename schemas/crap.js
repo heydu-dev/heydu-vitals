@@ -28,7 +28,9 @@ const CrapQuestionsSchema = Joi.object({
 			timeManagement: Joi.string()
 				.required()
 				.valid('Good', 'Average', 'Bad'),
-			skill: Joi.string().required().valid('Good', 'Average', 'Bad'),
+			problemSolving: Joi.string()
+				.required()
+				.valid('Good', 'Average', 'Bad'),
 		}),
 		countryToBuildCareer: Joi.string().required(),
 	}),
