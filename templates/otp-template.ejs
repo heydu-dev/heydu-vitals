@@ -6,93 +6,80 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Your Heydu Verification Code</title>
 </head>
-<body style="margin:0;padding:0;background-color:#f3f4f6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;">
-    <table role="presentation" style="width:100%;border-collapse:collapse;background-color:#f3f4f6;padding:40px 0;">
+<body style="margin:0;padding:0;background-color:#eef2f7;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;color:#0f172a;">
+    <table role="presentation" style="width:100%;border-collapse:collapse;background-color:#eef2f7;padding:28px 12px;">
         <tr>
             <td align="center">
-                <!-- Main Container -->
-                <table role="presentation" style="width:100%;max-width:600px;background-color:#ffffff;border-radius:12px;box-shadow:0 4px 6px rgba(0,0,0,0.05);overflow:hidden;">
-                    <!-- Header -->
+                <table role="presentation" style="width:100%;max-width:620px;border-collapse:separate;border-spacing:0;background-color:#ffffff;border:1px solid #e2e8f0;border-radius:14px;overflow:hidden;">
                     <tr>
-                        <td style="background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);padding:32px 40px;text-align:center;">
-                            <img src="cid:heydu-logo" alt="Heydu" style="width:140px;height:auto;margin-bottom:16px;" />
-                            <h1 style="margin:0;color:#ffffff;font-size:24px;font-weight:600;letter-spacing:-0.5px;">Verification Code</h1>
+                        <td style="padding:26px 30px;background-color:#0f172a;text-align:center;">
+                            <img src="cid:heydu-logo" alt="Heydu" style="width:128px;height:auto;display:block;margin:0 auto 14px auto;" />
+                            <p style="margin:0;font-size:20px;line-height:1.3;font-weight:700;color:#f8fafc;">Account Verification</p>
                         </td>
                     </tr>
-                    
-                    <!-- Body -->
+
                     <tr>
-                        <td style="padding:40px 40px 32px 40px;">
-                            <p style="margin:0 0 8px 0;font-size:16px;color:#111827;font-weight:500;">Hello<%= (typeof name !== 'undefined' && name) || (typeof userName !== 'undefined' && userName) ? ', ' + (name || userName) : '' %>,</p>
-                            <p style="margin:0 0 24px 0;font-size:15px;color:#6b7280;line-height:1.6;">
-                                We received a request to access your Heydu account 
-                                <span style="display:inline-block;padding:2px 8px;background-color:#f3f4f6;border-radius:4px;color:#374151;font-weight:500;"><%= userEmail %></span>
+                        <td style="padding:30px;">
+                            <p style="margin:0 0 10px 0;font-size:16px;line-height:1.5;color:#0f172a;">
+                                Hello<%= (typeof name !== 'undefined' && name) || (typeof userName !== 'undefined' && userName) ? ', ' + (name || userName) : '' %>,
                             </p>
-                            
-                            <!-- OTP Box -->
-                            <table role="presentation" style="width:100%;margin:32px 0;">
+                            <p style="margin:0 0 20px 0;font-size:14px;line-height:1.7;color:#475569;">
+                                Use the one-time password below to continue signing in to your Heydu account
+                                <span style="display:inline-block;margin-top:4px;padding:3px 8px;background-color:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;color:#334155;"><%= userEmail %></span>.
+                            </p>
+
+                            <table role="presentation" style="width:100%;border-collapse:collapse;margin:18px 0 22px 0;">
                                 <tr>
-                                    <td style="background:linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);border:2px solid #e5e7eb;border-radius:12px;padding:32px;text-align:center;">
-                                        <p style="margin:0 0 12px 0;font-size:13px;color:#9ca3af;text-transform:uppercase;letter-spacing:1px;font-weight:600;">Your Verification Code</p>
-                                        <div style="font-size:40px;font-weight:700;letter-spacing:12px;color:#667eea;font-family:'Courier New',Courier,monospace;user-select:all;margin:0;padding:12px 0;">
+                                    <td style="padding:22px;background-color:#f8fafc;border:1px solid #dbeafe;border-radius:12px;text-align:center;">
+                                        <p style="margin:0 0 8px 0;font-size:12px;line-height:1.4;letter-spacing:0.7px;text-transform:uppercase;color:#64748b;font-weight:700;">One-Time Password</p>
+                                        <div style="margin:0;font-size:38px;line-height:1.2;font-weight:800;letter-spacing:8px;color:#1d4ed8;font-family:Consolas,'Courier New',monospace;user-select:all;-webkit-user-select:all;">
                                             <%= otp %>
                                         </div>
-                                        <p style="margin:12px 0 0 0;font-size:12px;color:#9ca3af;">
-                                            <strong style="color:#ef4444;">Expires in 10 minutes</strong>
-                                        </p>
+                                        <p style="margin:10px 0 0 0;font-size:12px;color:#64748b;">Tap and hold to copy on mobile</p>
+                                        <p style="margin:6px 0 0 0;font-size:12px;color:#dc2626;font-weight:700;">This code expires in 10 minutes</p>
                                     </td>
                                 </tr>
                             </table>
-                            
-                            <!-- Security Notice -->
-                            <table role="presentation" style="width:100%;background-color:#fef3c7;border-left:4px solid #f59e0b;border-radius:8px;padding:16px;margin:24px 0 0 0;">
+
+                            <table role="presentation" style="width:100%;border-collapse:collapse;">
                                 <tr>
-                                    <td>
-                                        <p style="margin:0;font-size:14px;color:#92400e;line-height:1.5;">
-                                            <strong style="display:block;margin-bottom:4px;">🔒 Security Tip</strong>
-                                            Never share this code with anyone. Heydu support will never ask for your verification code.
+                                    <td style="padding:14px 16px;background-color:#fff7ed;border:1px solid #fed7aa;border-radius:10px;">
+                                        <p style="margin:0;font-size:13px;line-height:1.6;color:#9a3412;">
+                                            <strong>Security notice:</strong> Never share this code with anyone. Heydu support will never ask for your verification code.
                                         </p>
                                     </td>
                                 </tr>
                             </table>
-                            
-                            <p style="margin:32px 0 0 0;font-size:14px;color:#9ca3af;line-height:1.6;">
-                                If you didn't request this code, please ignore this email. Your account remains secure.
+
+                            <p style="margin:20px 0 0 0;font-size:13px;line-height:1.7;color:#64748b;">
+                                If you did not request this code, you can safely ignore this email.
                             </p>
                         </td>
                     </tr>
-                    
-                    <!-- Divider -->
+
                     <tr>
-                        <td style="padding:0 40px;">
-                            <div style="height:1px;background-color:#e5e7eb;"></div>
+                        <td style="padding:0 30px;">
+                            <div style="height:1px;background-color:#e2e8f0;"></div>
                         </td>
                     </tr>
-                    
-                    <!-- Footer -->
+
                     <tr>
-                        <td style="padding:32px 40px;text-align:center;">
-                            <p style="margin:0 0 16px 0;font-size:14px;color:#6b7280;">
-                                Need assistance? We're here to help.
-                            </p>
-                            <a href="mailto:connect@heydu.biz" style="display:inline-block;padding:12px 24px;background-color:#667eea;color:#ffffff;text-decoration:none;border-radius:6px;font-size:14px;font-weight:500;margin-bottom:24px;">
-                                Contact Support
-                            </a>
-                            <p style="margin:0;font-size:12px;color:#9ca3af;line-height:1.6;">
-                                © <%= new Date().getFullYear() %> Heydu. All rights reserved.<br/>
-                                <a href="https://heydu.biz" style="color:#667eea;text-decoration:none;">www.heydu.biz</a>
+                        <td style="padding:22px 30px 24px 30px;text-align:center;">
+                            <p style="margin:0 0 14px 0;font-size:13px;line-height:1.5;color:#64748b;">Need help? Contact our support team.</p>
+                            <a href="mailto:connect@heydu.biz" style="display:inline-block;padding:10px 20px;border-radius:8px;background-color:#1d4ed8;color:#ffffff;text-decoration:none;font-size:13px;font-weight:600;">Contact Support</a>
+                            <p style="margin:16px 0 0 0;font-size:12px;line-height:1.6;color:#94a3b8;">
+                                &copy; <%= new Date().getFullYear() %> Heydu. All rights reserved.<br />
+                                <a href="https://heydu.biz" style="color:#1d4ed8;text-decoration:none;">www.heydu.biz</a>
                             </p>
                         </td>
                     </tr>
                 </table>
-                
-                <!-- Footer Text -->
-                <table role="presentation" style="width:100%;max-width:600px;margin-top:24px;">
+
+                <table role="presentation" style="width:100%;max-width:620px;border-collapse:collapse;margin-top:14px;">
                     <tr>
-                        <td style="padding:0 20px;text-align:center;">
-                            <p style="margin:0;font-size:11px;color:#9ca3af;line-height:1.5;">
-                                This is an automated message, please do not reply to this email.<br/>
-                                If you have questions, reach out at <a href="mailto:connect@heydu.biz" style="color:#667eea;text-decoration:none;">connect@heydu.biz</a>
+                        <td style="padding:0 8px;text-align:center;">
+                            <p style="margin:0;font-size:11px;line-height:1.6;color:#94a3b8;">
+                                This is an automated message. Please do not reply to this email.
                             </p>
                         </td>
                     </tr>

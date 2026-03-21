@@ -50,7 +50,11 @@ const {
 	UpdateCommentSchema,
 } = require('./post');
 
-const { CrapSignupSchema, CrapQuestionsSchema } = require('./crap');
+const {
+	CrapSignupSchema,
+	CrapQuestionsSchema,
+	UpdateCrapQuestionsSchema,
+} = require('./crap');
 
 module.exports = {
 	InstitutionSchema,
@@ -100,4 +104,5 @@ module.exports = {
 	RegisterDeviceTokenSchema,
 	CrapSignupSchema,
 	CrapQuestionsSchema,
+	UpdateCrapQuestionsSchema,
 };

@@ -37,7 +37,15 @@ const CrapQuestionsSchema = Joi.object({
 	orderInfo: Joi.string().allow('').allow(null).required(),
 });
 
+const UpdateCrapQuestionsSchema = Joi.object({
+	formData: Joi.object({
+		countryToBuildCareer: Joi.string().optional(),
+	}),
+	orderInfo: Joi.string().allow('').allow(null).required(),
+});
+
 module.exports = {
 	CrapSignupSchema,
 	CrapQuestionsSchema,
+	UpdateCrapQuestionsSchema,
 };

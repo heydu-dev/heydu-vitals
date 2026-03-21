@@ -2,7 +2,7 @@
 /* eslint-disable no-console */
 /* eslint-disable default-case */
 const jwt = require('jsonwebtoken');
-const { userAction } = require('data-wolf');
+const { userAction, crapAction } = require('data-wolf');
 const { createErrorResponse } = require('./api-response-handler');
 
 function skippingRoutes() {
@@ -78,7 +78,7 @@ module.exports = {
 		return jwt.verify(
 			tokenDetails.token,
 			process.env.JWT_SECRET,
-			(err, user) => {
+			async (err, user) => {
 				if (err) {
 					console.log(err);
 					return res.status(403).json({
@@ -90,44 +90,77 @@ module.exports = {
 								: 'INVALID_ACCESS_TOKEN',
 					});
 				}
-				userAction
-					.getByEmail(user.email)
-					.then((profile) => {
-						if (!profile) {
-							return res.status(404).json({
-								message:
-									'User not registered with Heydu, please check',
-							});
-						}
-						if (
-							req.path.includes('/update-institution') &&
-							profile.profileTypeID !== 4 &&
-							req.body.status
-						) {
+
+				try {
+					const reportPathMatch = req.path.match(
+						/^\/crap\/get-report-by-id\/([^/]+)\/report\/([^/]+)$/,
+					);
+					if (reportPathMatch) {
+						const formID = reportPathMatch[1];
+						const crapUser = await userAction.getCrapUser(
+							user.email,
+						);
+						if (!crapUser) {
 							return res.status(403).json({
 								message:
-									'You are not allowed to take this action on this profile',
+									'User is not allowed to use this report',
+								code: 'FORBIDDEN',
 							});
 						}
-						if (
-							profile &&
-							(profile.profileTypeID === 0 ||
-								profile.profileTypeID === 1) &&
-							['rejected', 'deleted', 'pending'].includes(
-								profile.status,
-							)
-						) {
-							statusBasedResponse(profile.status);
+
+						const formData = await crapAction.getFormData(formID);
+						if (!formData) {
+							return res.status(404).json({
+								message: 'Form data not found',
+								code: 'FORM_DATA_NOT_FOUND',
+							});
 						}
-						next();
-					})
-					.catch((e) => {
-						console.log(e);
-						res.status(500).json({
-							message: 'Something went wrong',
-							code: 'INTERNAL_SERVER_ERROR',
+
+						if (formData.userID !== crapUser.id) {
+							return res.status(403).json({
+								message:
+									'User is not allowed to use this report',
+								code: 'FORBIDDEN',
+							});
+						}
+					}
+
+					const profile = await userAction.getByEmail(user.email);
+					if (!profile) {
+						return res.status(404).json({
+							message:
+								'User not registered with Heydu, please check',
 						});
+					}
+
+					if (
+						req.path.includes('/update-institution') &&
+						profile.profileTypeID !== 4 &&
+						req.body.status
+					) {
+						return res.status(403).json({
+							message:
+								'You are not allowed to take this action on this profile',
+						});
+					}
+					if (
+						profile &&
+						(profile.profileTypeID === 0 ||
+							profile.profileTypeID === 1) &&
+						['rejected', 'deleted', 'pending'].includes(
+							profile.status,
+						)
+					) {
+						statusBasedResponse(profile.status);
+					}
+					return next();
+				} catch (e) {
+					console.log(e);
+					return res.status(500).json({
+						message: 'Something went wrong',
+						code: 'INTERNAL_SERVER_ERROR',
 					});
+				}
 			},
 		);
 	},
