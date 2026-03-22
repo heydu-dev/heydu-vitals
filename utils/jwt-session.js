@@ -93,7 +93,7 @@ module.exports = {
 
 				try {
 					const reportPathMatch = req.path.match(
-						/^\/crap\/get-report-by-id\/([^/]+)\/report\/([^/]+)$/,
+						/^(?:\/crap)?\/get-report-by-id\/([^/]+)\/report\/([^/]+)$/,
 					);
 					if (reportPathMatch) {
 						const formID = reportPathMatch[1];

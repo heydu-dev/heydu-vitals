@@ -40,9 +40,13 @@ const CrapQuestionsSchema = Joi.object({
 const UpdateCrapQuestionsSchema = Joi.object({
 	formData: Joi.object({
 		countryToBuildCareer: Joi.string().optional(),
-	}),
-	orderInfo: Joi.string().allow('').allow(null).required(),
-});
+	}).optional(),
+	orderInfo: Joi.string().allow('').allow(null).optional(),
+})
+	.or('formData', 'orderInfo')
+	.messages({
+		'object.missing': 'At least one of formData or orderInfo is required',
+	});
 
 module.exports = {
 	CrapSignupSchema,
