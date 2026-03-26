@@ -36,6 +36,12 @@ const GetBatchSchema = Joi.object({
 	),
 });
 
+const UpdateBatchDisabledSchema = Joi.object({
+	excelFileID: Joi.string().required(),
+	batchID: Joi.string().required(),
+	disabled: Joi.boolean().required(),
+});
+
 const AddCourseSchema = Joi.object({
 	departmentID: Joi.string().required(),
 	specialisationID: Joi.string().required(),
@@ -94,6 +100,7 @@ module.exports = {
 	SpecialisationSchema,
 	BatchSchema,
 	GetBatchSchema,
+	UpdateBatchDisabledSchema,
 	AddCourseSchema,
 	AddClassMaterialSchema,
 	GetCourseSchema,
