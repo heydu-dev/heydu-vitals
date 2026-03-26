@@ -120,8 +120,10 @@ const GetProfileKeySignedUrlsSchema = Joi.object({
 });
 
 const GetStudentsByBatchIDSchema = Joi.object({
-	limit: Joi.number().required().max(10),
+	limit: Joi.number().required().min(1).max(10),
+	/** Query string may be JSON-encoded DynamoDB key (same pattern as batch list). */
 	lastEvaluatedKey: Joi.alternatives().try(
+		Joi.string(),
 		Joi.object().unknown(true),
 		Joi.allow(null),
 	),
