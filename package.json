@@ -1,10 +1,10 @@
 {
   "name": "heydu-vitals",
-  "version": "1.0.176",
+  "version": "1.0.178",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "prepare": "husky",
+    "prepare": "node scripts/prepare-husky.cjs",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "format": "prettier --write .",
     "spell": "cspell '**/*'",
@@ -17,7 +17,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.850.0",
     "@aws-sdk/s3-request-presigner": "^3.850.0",
-    "data-wolf": "^1.0.226",
+    "data-wolf": "^1.0.229",
     "ejs": "^3.1.10",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",

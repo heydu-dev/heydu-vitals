@@ -28,7 +28,9 @@ const GetBatchSchema = Joi.object({
 	departmentID: Joi.string().optional(),
 	specialisationID: Joi.string().optional(),
 	limit: Joi.number().required().max(10),
+	/** Query strings are always strings; gateway passes JSON-encoded DynamoDB key */
 	lastEvaluatedKey: Joi.alternatives().try(
+		Joi.string(),
 		Joi.object().unknown(true),
 		Joi.allow(null),
 	),
