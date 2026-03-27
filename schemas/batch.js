@@ -6,6 +6,12 @@ const DepartmentSchema = Joi.object({
 	institutionID: Joi.string().required(),
 });
 
+/** Bulk department create: display names only (Excel / UI parses to this array). */
+const BulkDepartmentsSchema = Joi.object({
+	institutionID: Joi.string().required(),
+	names: Joi.array().items(Joi.string()).min(1).max(2000).required(),
+});
+
 const SpecialisationSchema = Joi.object({
 	name: Joi.string().trim().required(),
 	departmentID: Joi.string().required(),
@@ -97,6 +103,7 @@ const GetClassMaterialSchema = Joi.object({
 
 module.exports = {
 	DepartmentSchema,
+	BulkDepartmentsSchema,
 	SpecialisationSchema,
 	BatchSchema,
 	GetBatchSchema,

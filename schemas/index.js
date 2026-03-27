@@ -24,6 +24,7 @@ const {
 } = require('./user');
 const {
 	DepartmentSchema,
+	BulkDepartmentsSchema,
 	SpecialisationSchema,
 	BatchSchema,
 	GetBatchSchema,
@@ -75,6 +76,7 @@ module.exports = {
 	FollowerSchema,
 	GetFollowersFollowingsSchema,
 	DepartmentSchema,
+	BulkDepartmentsSchema,
 	SpecialisationSchema,
 	BatchSchema,
 	GetBatchSchema,
