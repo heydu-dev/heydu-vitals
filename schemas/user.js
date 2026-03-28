@@ -53,6 +53,24 @@ const StaffSchema = Joi.object({
 	gender: Joi.string().trim().required(),
 });
 
+/** Bulk staff create: shared institution / department; gender per member row. */
+const BulkStaffSchema = Joi.object({
+	institutionID: Joi.string().required(),
+	departmentID: Joi.string().required(),
+	members: Joi.array()
+		.items(
+			Joi.object({
+				name: Joi.string().trim().required(),
+				email: Joi.string().email().trim().lowercase().required(),
+				designation: Joi.string().trim().required(),
+				gender: Joi.string().trim().required(),
+			}),
+		)
+		.min(1)
+		.max(500)
+		.required(),
+});
+
 const EditStaffSchema = Joi.object({
 	name: Joi.string().trim(),
 	profileImageKey: Joi.string().optional(),
@@ -136,6 +154,7 @@ const GetPostUsersSchema = Joi.object({
 module.exports = {
 	AdminSchema,
 	StaffSchema,
+	BulkStaffSchema,
 	EditStaffSchema,
 	StudentSchema,
 	EditStudentSchema,

@@ -15,6 +15,7 @@ const {
 	MAX_INSTITUTION_SHARDS,
 	getShardNumber,
 } = require('./shard-utils');
+const { normalizeEmailFromExcel } = require('./excel-email');
 
 module.exports = {
 	schemaCheck,
@@ -33,4 +34,5 @@ module.exports = {
 	MAX_FOLLOWER_SHARDS,
 	MAX_INSTITUTION_SHARDS,
 	getShardNumber,
+	normalizeEmailFromExcel,
 };

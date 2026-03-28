@@ -8,6 +8,7 @@ const {
 } = require('./utility');
 const {
 	StaffSchema,
+	BulkStaffSchema,
 	EditStaffSchema,
 	StudentSchema,
 	EditStudentSchema,
@@ -70,6 +71,7 @@ module.exports = {
 	RoleSchema,
 	CountrySchema,
 	StaffSchema,
+	BulkStaffSchema,
 	EditStaffSchema,
 	StudentSchema,
 	EditStudentSchema,
