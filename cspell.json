@@ -24,6 +24,7 @@
         "uuidv",
         "aws-sdk",
         "presigner",
+        "Presign",
         "sendgrid",
     ],
     "files": [

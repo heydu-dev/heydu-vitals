@@ -4,6 +4,7 @@ const {
 	S3Client,
 	PutObjectCommand,
 	GetObjectCommand,
+	DeleteObjectCommand,
 } = require('@aws-sdk/client-s3');
 
 const awsS3folderList = {
@@ -107,5 +108,23 @@ module.exports = {
 				reject(e);
 			}
 		});
+	},
+
+	/** Delete one object from R2 (Key is the full object path, same as presigned put/get). */
+	deleteR2Object(r2Bucket, key) {
+		const S3 = new S3Client({
+			region: 'auto',
+			endpoint: `https://${process.env.CLOUDFLARE_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+			credentials: {
+				accessKeyId: process.env.R2_ACCESS_KEY_ID,
+				secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
+			},
+		});
+		return S3.send(
+			new DeleteObjectCommand({
+				Bucket: r2Bucket || process.env.R2_BUCKET,
+				Key: key,
+			}),
+		);
 	},
 };

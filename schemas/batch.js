@@ -28,11 +28,15 @@ const BatchSchema = Joi.object({
 	endYear: Joi.string().required(),
 	excelFileID: Joi.string().required(),
 	actualExcelFileName: Joi.string().required(),
+	/** Optional section label (e.g. A, B) — omit or empty if not used */
+	section: Joi.string().trim().allow('').optional(),
 });
 
 const GetBatchSchema = Joi.object({
 	departmentID: Joi.string().optional(),
 	specialisationID: Joi.string().optional(),
+	/** When set with department + specialisation, uses GSI_6 (batches for that section; empty = no section) */
+	section: Joi.string().allow('').optional(),
 	limit: Joi.number().required().max(10),
 	/** Query strings are always strings; gateway passes JSON-encoded DynamoDB key */
 	lastEvaluatedKey: Joi.alternatives().try(
@@ -58,6 +62,29 @@ const AddCourseSchema = Joi.object({
 	name: Joi.string().required(),
 });
 
+/** Request presigned PUT URLs before upload — no r2Key yet */
+const ClassMaterialPresignSchema = Joi.object({
+	uploadedBy: Joi.string().required(),
+	materials: Joi.array()
+		.items(
+			Joi.object({
+				name: Joi.string().optional(),
+				institutionID: Joi.string().required(),
+				fileExtension: Joi.string().required(),
+				courseID: Joi.string().required(),
+				batchID: Joi.string().required(),
+				year: Joi.string().required(),
+				fileKey: Joi.string()
+					.guid({ version: ['uuidv5', 'uuidv7'] })
+					.required(),
+				fileSize: Joi.number().required(),
+			}),
+		)
+		.required()
+		.min(1),
+});
+
+/** Persist metadata after successful upload to R2 */
 const AddClassMaterialSchema = Joi.object({
 	uploadedBy: Joi.string().required(),
 	materials: Joi.array()
@@ -73,10 +100,17 @@ const AddClassMaterialSchema = Joi.object({
 					.guid({ version: ['uuidv5', 'uuidv7'] })
 					.required(),
 				fileSize: Joi.number().required(),
+				/** Full R2 object key returned as `bucketPath` from class-material-signed-url */
+				r2Key: Joi.string().required(),
 			}),
 		)
 		.required()
 		.min(1),
+});
+
+const DeleteClassMaterialSchema = Joi.object({
+	courseID: Joi.string().required(),
+	classMaterialID: Joi.string().required(),
 });
 
 const GetCourseSchema = Joi.object({
@@ -102,6 +136,20 @@ const GetClassMaterialSchema = Joi.object({
 	),
 });
 
+/** GET granular list: GSI_2 partition = institution#batch#year#course */
+const GetClassMaterialScopeSchema = Joi.object({
+	institutionID: Joi.string().required(),
+	batchID: Joi.string().required(),
+	year: Joi.string().required(),
+	courseID: Joi.string().required(),
+	limit: Joi.number().required().max(10),
+	lastEvaluatedKey: Joi.alternatives().try(
+		Joi.string(),
+		Joi.object().unknown(true),
+		Joi.allow(null),
+	),
+});
+
 module.exports = {
 	DepartmentSchema,
 	BulkDepartmentsSchema,
@@ -110,7 +158,10 @@ module.exports = {
 	GetBatchSchema,
 	DeleteBatchSchema,
 	AddCourseSchema,
+	ClassMaterialPresignSchema,
 	AddClassMaterialSchema,
+	DeleteClassMaterialSchema,
 	GetCourseSchema,
 	GetClassMaterialSchema,
+	GetClassMaterialScopeSchema,
 };
