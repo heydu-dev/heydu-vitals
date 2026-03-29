@@ -1,8 +1,11 @@
 {
   "name": "heydu-vitals",
-  "version": "1.0.183",
+  "version": "1.0.184",
   "description": "",
   "main": "index.js",
+  "publishConfig": {
+    "registry": "https://heydu-975050238836.d.codeartifact.ap-south-1.amazonaws.com/npm/heydu-vitals/"
+  },
   "scripts": {
     "prepare": "node scripts/prepare-husky.cjs",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
@@ -17,7 +20,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.850.0",
     "@aws-sdk/s3-request-presigner": "^3.850.0",
-    "data-wolf": "^1.0.238",
+    "data-wolf": "^1.0.239",
     "ejs": "^3.1.10",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",

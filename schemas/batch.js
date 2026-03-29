@@ -42,10 +42,11 @@ const GetBatchSchema = Joi.object({
 	),
 });
 
-const UpdateBatchDisabledSchema = Joi.object({
+/** Permanently delete a batch: students, DynamoDB batch row, and S3 upload. */
+const DeleteBatchSchema = Joi.object({
+	institutionID: Joi.string().required(),
 	excelFileID: Joi.string().required(),
 	batchID: Joi.string().required(),
-	disabled: Joi.boolean().required(),
 });
 
 const AddCourseSchema = Joi.object({
@@ -107,7 +108,7 @@ module.exports = {
 	SpecialisationSchema,
 	BatchSchema,
 	GetBatchSchema,
-	UpdateBatchDisabledSchema,
+	DeleteBatchSchema,
 	AddCourseSchema,
 	AddClassMaterialSchema,
 	GetCourseSchema,
