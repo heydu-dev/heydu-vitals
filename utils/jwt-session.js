@@ -9,6 +9,7 @@ function skippingRoutes() {
 	const SKIP_ROUTES = [
 		'/send-otp',
 		'/register',
+		'/register-crap-user',
 		'/validate-otp',
 		'/logout',
 		// "/api/admin/auth/send-otp",
