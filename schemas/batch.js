@@ -53,6 +53,14 @@ const DeleteBatchSchema = Joi.object({
 	batchID: Joi.string().required(),
 });
 
+/** Presign PUT for uploading more students to an existing batch (same S3 key / excelFileID as initial upload). */
+const AdditionalStudentUploadSchema = Joi.object({
+	institutionID: Joi.string().required(),
+	batchID: Joi.string().required(),
+	excelFileID: Joi.string().required(),
+	actualExcelFileName: Joi.string().trim().required(),
+});
+
 const AddCourseSchema = Joi.object({
 	departmentID: Joi.string().required(),
 	specialisationID: Joi.string().required(),
@@ -157,6 +165,7 @@ module.exports = {
 	BatchSchema,
 	GetBatchSchema,
 	DeleteBatchSchema,
+	AdditionalStudentUploadSchema,
 	AddCourseSchema,
 	ClassMaterialPresignSchema,
 	AddClassMaterialSchema,
