@@ -22,6 +22,7 @@ const {
 	GetStudentsByBatchIDSchema,
 	GetPostUsersSchema,
 	RegisterDeviceTokenSchema,
+	GetNotificationsSchema,
 } = require('./user');
 const {
 	DepartmentSchema,
@@ -116,6 +117,7 @@ module.exports = {
 	GetStudentsByBatchIDSchema,
 	GetPostUsersSchema,
 	RegisterDeviceTokenSchema,
+	GetNotificationsSchema,
 	CrapSignupSchema,
 	CrapQuestionsSchema,
 	UpdateCrapQuestionsSchema,

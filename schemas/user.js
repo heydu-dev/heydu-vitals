@@ -151,6 +151,15 @@ const GetPostUsersSchema = Joi.object({
 	userIDs: Joi.array().items(uuidSchema).min(1).required(),
 });
 
+const GetNotificationsSchema = Joi.object({
+	limit: Joi.number().min(1).max(50).default(20),
+	lastEvaluatedKey: Joi.alternatives().try(
+		Joi.string(),
+		Joi.object().unknown(true),
+		Joi.allow(null),
+	),
+});
+
 module.exports = {
 	AdminSchema,
 	StaffSchema,
@@ -167,4 +176,5 @@ module.exports = {
 	GetStudentsByBatchIDSchema,
 	GetPostUsersSchema,
 	RegisterDeviceTokenSchema,
+	GetNotificationsSchema,
 };
