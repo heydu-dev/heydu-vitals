@@ -93,22 +93,19 @@ module.exports = {
 				}
 
 				try {
+					const profile = await userAction.getByEmail(user.email);
+					if (!profile) {
+						return res.status(404).json({
+							message:
+								'User not registered with Heydu, please check',
+						});
+					}
+
 					const reportPathMatch = req.path.match(
 						/^(?:\/crap)?\/get-report-by-id\/([^/]+)\/report\/([^/]+)$/,
 					);
 					if (reportPathMatch) {
 						const formID = reportPathMatch[1];
-						const crapUser = await userAction.getCrapUser(
-							user.email,
-						);
-						if (!crapUser) {
-							return res.status(403).json({
-								message:
-									'User is not allowed to use this report',
-								code: 'FORBIDDEN',
-							});
-						}
-
 						const formData = await crapAction.getFormData(formID);
 						if (!formData) {
 							return res.status(404).json({
@@ -117,21 +114,19 @@ module.exports = {
 							});
 						}
 
-						if (formData.userID !== crapUser.id) {
-							return res.status(403).json({
-								message:
-									'User is not allowed to use this report',
-								code: 'FORBIDDEN',
-							});
+						const isAdminProfile = profile.profileTypeID === 4;
+						if (!isAdminProfile) {
+							const crapUser = await userAction.getCrapUser(
+								user.email,
+							);
+							if (!crapUser || formData.userID !== crapUser.id) {
+								return res.status(403).json({
+									message:
+										'User is not allowed to use this report',
+									code: 'FORBIDDEN',
+								});
+							}
 						}
-					}
-
-					const profile = await userAction.getByEmail(user.email);
-					if (!profile) {
-						return res.status(404).json({
-							message:
-								'User not registered with Heydu, please check',
-						});
 					}
 
 					if (
