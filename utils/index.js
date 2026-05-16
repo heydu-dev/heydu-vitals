@@ -8,13 +8,7 @@ const {
 	sendErrorResponse,
 	ErrorHandler,
 } = require('./api-response-handler');
-const {
-	generateJWT,
-	authenticateJWT,
-	AUTH_AUDIENCES,
-	normalizeAudience,
-	STATUS,
-} = require('./jwt-session');
+const { generateJWT, authenticateJWT, STATUS } = require('./jwt-session');
 const awsS3Helper = require('./aws-s3-helper');
 const {
 	MAX_FOLLOWER_SHARDS,
@@ -35,8 +29,6 @@ module.exports = {
 	ErrorHandler,
 	generateJWT,
 	authenticateJWT,
-	AUTH_AUDIENCES,
-	normalizeAudience,
 	STATUS,
 	awsS3Helper,
 	MAX_FOLLOWER_SHARDS,

@@ -16,7 +16,6 @@ const ValidateOTPSchema = Joi.object({
 const RefreshTokenSchema = Joi.object({
 	refreshToken: Joi.string().trim().required(),
 	email: Joi.string().email().trim().lowercase().required(),
-	appType: Joi.string().optional(),
 });
 
 module.exports = {
