@@ -119,7 +119,22 @@ module.exports = {
 							const crapUser = await userAction.getCrapUser(
 								user.email,
 							);
-							if (!crapUser || formData.userID !== crapUser.id) {
+							const allowedUserIDs = new Set(
+								[profile.id, crapUser && crapUser.id]
+									.filter(Boolean)
+									.map(String),
+							);
+							const formUserID = String(formData.userID || '');
+							const formEmail = String(formData.email || '')
+								.trim()
+								.toLowerCase();
+							const tokenEmail = String(user.email || '')
+								.trim()
+								.toLowerCase();
+							if (
+								!allowedUserIDs.has(formUserID) &&
+								formEmail !== tokenEmail
+							) {
 								return res.status(403).json({
 									message:
 										'User is not allowed to use this report',
