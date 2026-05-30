@@ -48,8 +48,66 @@ const UpdateCrapQuestionsSchema = Joi.object({
 		'object.missing': 'At least one of formData or orderInfo is required',
 	});
 
+const BuyCrapBulkReportSchema = Joi.object({
+	institutionID: Joi.string().trim().required(),
+	departmentID: Joi.string().trim().required(),
+	specialisationID: Joi.string().trim().required(),
+	batchID: Joi.string().trim().optional(),
+	batchYear: Joi.string().trim().optional(),
+	batchDetails: Joi.string().trim().allow('').optional(),
+});
+
+const AdminCrapBulkTokenSchema = Joi.object({
+	institutionID: Joi.string().trim().required(),
+	departmentID: Joi.string().trim().required(),
+	specialisationID: Joi.string().trim().optional(),
+	batchID: Joi.string().trim().optional(),
+}).with('batchID', 'specialisationID');
+
+const CheckCrapBulkTokenEligibilitySchema = Joi.object({
+	tokenNumber: Joi.string().trim().alphanum().max(6).required(),
+});
+
+const RedeemCrapBulkTokenSchema = Joi.object({
+	tokenNumber: Joi.string().trim().alphanum().max(6).required(),
+	formData: Joi.object({
+		degree: Joi.string().required(),
+		branch: Joi.string().required(),
+		year: Joi.string().required(),
+		specialisation: Joi.string().required(),
+		jobRole: Joi.string().required(),
+		personality: Joi.object({
+			communication: Joi.string()
+				.required()
+				.valid('Good', 'Average', 'Bad'),
+			workWithTeam: Joi.string()
+				.required()
+				.valid('Good', 'Average', 'Bad'),
+			presentation: Joi.string()
+				.required()
+				.valid('Good', 'Average', 'Bad'),
+			timeManagement: Joi.string()
+				.required()
+				.valid('Good', 'Average', 'Bad'),
+			problemSolving: Joi.string()
+				.required()
+				.valid('Good', 'Average', 'Bad'),
+		}),
+		countryToBuildCareer: Joi.string().required(),
+	}).required(),
+});
+
+const DeactivateCrapBulkTokenSchema = Joi.object({
+	tokenNumber: Joi.string().trim().alphanum().max(6).required(),
+});
+
 module.exports = {
 	CrapSignupSchema,
 	CrapQuestionsSchema,
 	UpdateCrapQuestionsSchema,
+	BuyCrapBulkReportSchema,
+	AdminCrapBulkTokenSchema,
+	CheckCrapBulkTokenEligibilitySchema,
+	RedeemCrapBulkTokenSchema,
+	DeactivateCrapBulkTokenSchema,
 };

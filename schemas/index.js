@@ -62,6 +62,11 @@ const {
 	CrapSignupSchema,
 	CrapQuestionsSchema,
 	UpdateCrapQuestionsSchema,
+	BuyCrapBulkReportSchema,
+	AdminCrapBulkTokenSchema,
+	CheckCrapBulkTokenEligibilitySchema,
+	RedeemCrapBulkTokenSchema,
+	DeactivateCrapBulkTokenSchema,
 } = require('./crap');
 
 module.exports = {
@@ -121,4 +126,9 @@ module.exports = {
 	CrapSignupSchema,
 	CrapQuestionsSchema,
 	UpdateCrapQuestionsSchema,
+	BuyCrapBulkReportSchema,
+	AdminCrapBulkTokenSchema,
+	CheckCrapBulkTokenEligibilitySchema,
+	RedeemCrapBulkTokenSchema,
+	DeactivateCrapBulkTokenSchema,
 };
