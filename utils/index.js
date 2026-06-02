@@ -16,10 +16,12 @@ const {
 	getShardNumber,
 } = require('./shard-utils');
 const { normalizeEmailFromExcel } = require('./excel-email');
+const { enqueueEmail } = require('./email-queue');
 
 module.exports = {
 	schemaCheck,
 	sendEmail,
+	enqueueEmail,
 	USER_STATUS,
 	API_RESPONSES,
 	getApiResponse,

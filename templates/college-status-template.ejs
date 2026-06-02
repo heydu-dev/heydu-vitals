@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Institution Status Update — Heydu</title>
+</head>
+<body style="margin:0;padding:0;background-color:#eef2f7;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;color:#0f172a;">
+    <table role="presentation" style="width:100%;border-collapse:collapse;background-color:#eef2f7;padding:28px 12px;">
+        <tr>
+            <td align="center">
+                <table role="presentation" style="width:100%;max-width:620px;border-collapse:separate;border-spacing:0;background-color:#ffffff;border:1px solid #e2e8f0;border-radius:14px;overflow:hidden;">
+                    <tr>
+                        <td style="padding:26px 30px;background-color:#0f172a;text-align:center;">
+                            <img src="cid:heydu-logo" alt="Heydu" style="width:128px;height:auto;display:block;margin:0 auto 14px auto;" />
+                            <p style="margin:0;font-size:20px;line-height:1.3;font-weight:700;color:#f8fafc;">Institution Status Update</p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="padding:30px;">
+                            <p style="margin:0 0 10px 0;font-size:16px;line-height:1.5;color:#0f172a;">
+                                Hello<%= typeof institutionName !== 'undefined' && institutionName ? ', ' + institutionName : '' %>,
+                            </p>
+                            <p style="margin:0 0 20px 0;font-size:14px;line-height:1.7;color:#475569;">
+                                The status of your institution
+                                <span style="display:inline-block;margin-top:4px;padding:3px 8px;background-color:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;color:#334155;"><%= institutionName %></span>
+                                has been updated.
+                            </p>
+
+                            <table role="presentation" style="width:100%;border-collapse:collapse;margin:18px 0 22px 0;">
+                                <tr>
+                                    <td style="padding:22px;background-color:#f8fafc;border:1px solid #dbeafe;border-radius:12px;text-align:center;">
+                                        <p style="margin:0 0 8px 0;font-size:12px;line-height:1.4;letter-spacing:0.7px;text-transform:uppercase;color:#64748b;font-weight:700;">Status</p>
+                                        <% if (status === 'approved') { %>
+                                            <div style="margin:0;font-size:18px;line-height:1.2;font-weight:700;color:#16a34a;font-family:Consolas,'Courier New',monospace;">
+                                                Approved ✓
+                                            </div>
+                                            <p style="margin:10px 0 0 0;font-size:13px;color:#64748b;">Your institution is now active. You can start adding students and staff.</p>
+                                        <% } else if (status === 'rejected') { %>
+                                            <div style="margin:0;font-size:18px;line-height:1.2;font-weight:700;color:#dc2626;font-family:Consolas,'Courier New',monospace;">
+                                                Rejected ✗
+                                            </div>
+                                            <p style="margin:10px 0 0 0;font-size:13px;color:#64748b;">Unfortunately, your registration could not be approved. Please contact support for more information.</p>
+                                        <% } else { %>
+                                            <div style="margin:0;font-size:18px;line-height:1.2;font-weight:700;color:#64748b;font-family:Consolas,'Courier New',monospace;">
+                                                <%= status %>
+                                            </div>
+                                        <% } %>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <p style="margin:20px 0 0 0;font-size:13px;line-height:1.7;color:#64748b;">
+                                If you have any questions, please reach out to our support team.
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="padding:0 30px;">
+                            <div style="height:1px;background-color:#e2e8f0;"></div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="padding:22px 30px 24px 30px;text-align:center;">
+                            <p style="margin:0 0 14px 0;font-size:13px;line-height:1.5;color:#64748b;">Need help? Contact our support team.</p>
+                            <a href="mailto:connect@heydu.biz" style="display:inline-block;padding:10px 20px;border-radius:8px;background-color:#1d4ed8;color:#ffffff;text-decoration:none;font-size:13px;font-weight:600;">Contact Support</a>
+                            <p style="margin:16px 0 0 0;font-size:12px;line-height:1.6;color:#94a3b8;">
+                                &copy; <%= new Date().getFullYear() %> Heydu. All rights reserved.<br />
+                                <a href="https://heydu.biz" style="color:#1d4ed8;text-decoration:none;">www.heydu.biz</a>
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+
+                <table role="presentation" style="width:100%;max-width:620px;border-collapse:collapse;margin-top:14px;">
+                    <tr>
+                        <td style="padding:0 8px;text-align:center;">
+                            <p style="margin:0;font-size:11px;line-height:1.6;color:#94a3b8;">
+                                This is an automated message. Please do not reply to this email.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
