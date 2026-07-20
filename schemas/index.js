@@ -23,6 +23,8 @@ const {
 	GetPostUsersSchema,
 	RegisterDeviceTokenSchema,
 	GetNotificationsSchema,
+	ConvertStudentToAlumniSchema,
+	GetAlumniConversionFailuresSchema,
 } = require('./user');
 const {
 	DepartmentSchema,
@@ -131,4 +133,6 @@ module.exports = {
 	CheckCrapBulkTokenEligibilitySchema,
 	RedeemCrapBulkTokenSchema,
 	DeactivateCrapBulkTokenSchema,
+	ConvertStudentToAlumniSchema,
+	GetAlumniConversionFailuresSchema,
 };

@@ -160,6 +160,22 @@ const GetNotificationsSchema = Joi.object({
 	),
 });
 
+/** Convert a single student to alumni (manual re-conversion of a failed one). */
+const ConvertStudentToAlumniSchema = Joi.object({
+	studentID: Joi.string().required(),
+});
+
+/** List students in a batch whose alumni conversion failed. */
+const GetAlumniConversionFailuresSchema = Joi.object({
+	batchID: Joi.string().required(),
+	limit: Joi.number().min(1).max(50).default(20),
+	lastEvaluatedKey: Joi.alternatives().try(
+		Joi.string(),
+		Joi.object().unknown(true),
+		Joi.allow(null),
+	),
+});
+
 module.exports = {
 	AdminSchema,
 	StaffSchema,
@@ -177,4 +193,6 @@ module.exports = {
 	GetPostUsersSchema,
 	RegisterDeviceTokenSchema,
 	GetNotificationsSchema,
+	ConvertStudentToAlumniSchema,
+	GetAlumniConversionFailuresSchema,
 };

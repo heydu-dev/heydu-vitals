@@ -158,6 +158,12 @@ const GetClassMaterialScopeSchema = Joi.object({
 	),
 });
 
+/** Enqueue an async batch → alumni conversion job. */
+const ConvertBatchToAlumniSchema = Joi.object({
+	batchID: Joi.string().required(),
+	institutionID: Joi.string().required(),
+});
+
 module.exports = {
 	DepartmentSchema,
 	BulkDepartmentsSchema,
@@ -173,4 +179,5 @@ module.exports = {
 	GetCourseSchema,
 	GetClassMaterialSchema,
 	GetClassMaterialScopeSchema,
+	ConvertBatchToAlumniSchema,
 };
