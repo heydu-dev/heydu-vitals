@@ -1,55 +1,55 @@
 {
-  "name": "heydu-vitals",
-  "version": "1.0.209",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "prepare": "node scripts/prepare-husky.cjs",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "format": "prettier --write .",
-    "spell": "cspell '**/*'",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "dependencies": {
-    "@aws-sdk/client-s3": "^3.850.0",
-    "@aws-sdk/client-sqs": "^3.850.0",
-    "@aws-sdk/s3-request-presigner": "^3.850.0",
-    "data-wolf": "^1.0.254",
-    "ejs": "^3.1.10",
-    "joi": "^17.13.3",
-    "jsonwebtoken": "^9.0.2",
-    "nodemailer": "^7.0.3"
-  },
-  "devDependencies": {
-    "cspell": "^8.4.1",
-    "eslint": "^8.57.0",
-    "eslint-config-airbnb": "^19.0.4",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-jsx-a11y": "^6.8.0",
-    "eslint-plugin-react": "^7.34.1",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "husky": "^9.0.11",
-    "lint-staged": "^15.2.2",
-    "prettier": "^3.3.2"
-  },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "*": "cspell --no-progress --no-summary"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/heydu-dev/heydu-vitals.git"
-  },
-  "bugs": {
-    "url": "https://github.com/heydu-dev/heydu-vitals/issues"
-  },
-  "homepage": "https://github.com/heydu-dev/heydu-vitals#readme"
+	"name": "heydu-vitals",
+	"version": "1.0.210",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"prepare": "node scripts/prepare-husky.cjs",
+		"lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+		"format": "prettier --write .",
+		"spell": "cspell '**/*'",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"type": "commonjs",
+	"dependencies": {
+		"@aws-sdk/client-s3": "^3.850.0",
+		"@aws-sdk/client-sqs": "^3.850.0",
+		"@aws-sdk/s3-request-presigner": "^3.850.0",
+		"data-wolf": "^1.0.254",
+		"ejs": "^3.1.10",
+		"joi": "^17.13.3",
+		"jsonwebtoken": "^9.0.2",
+		"nodemailer": "^7.0.3"
+	},
+	"devDependencies": {
+		"cspell": "^8.4.1",
+		"eslint": "^8.57.0",
+		"eslint-config-airbnb": "^19.0.4",
+		"eslint-config-prettier": "^9.1.0",
+		"eslint-plugin-import": "^2.29.1",
+		"eslint-plugin-jsx-a11y": "^6.8.0",
+		"eslint-plugin-react": "^7.34.1",
+		"eslint-plugin-react-hooks": "^4.6.0",
+		"husky": "^9.0.11",
+		"lint-staged": "^15.2.2",
+		"prettier": "^3.3.2"
+	},
+	"lint-staged": {
+		"*.{js,jsx,ts,tsx}": [
+			"eslint --fix",
+			"prettier --write"
+		],
+		"*": "cspell --no-progress --no-summary"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/heydu-dev/heydu-vitals.git"
+	},
+	"bugs": {
+		"url": "https://github.com/heydu-dev/heydu-vitals/issues"
+	},
+	"homepage": "https://github.com/heydu-dev/heydu-vitals#readme"
 }
