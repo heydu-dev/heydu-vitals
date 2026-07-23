@@ -158,9 +158,9 @@ const GetClassMaterialScopeSchema = Joi.object({
 	),
 });
 
-/** Enqueue an async batch → alumni conversion job. */
+/** Enqueue an async batch → alumni conversion job. Accepts one or more batch IDs. */
 const ConvertBatchToAlumniSchema = Joi.object({
-	batchID: Joi.string().required(),
+	batchIDs: Joi.array().items(Joi.string().required()).min(1).required(),
 	institutionID: Joi.string().required(),
 });
 
