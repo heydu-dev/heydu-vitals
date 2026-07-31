@@ -160,9 +160,9 @@ const GetNotificationsSchema = Joi.object({
 	),
 });
 
-/** Convert a single student to alumni (manual re-conversion of a failed one). */
-const ConvertStudentToAlumniSchema = Joi.object({
-	studentID: Joi.string().required(),
+/** Convert one or more students to alumni (manual / retry path). Accepts an array of 1+. */
+const ConvertStudentsToAlumniSchema = Joi.object({
+	studentIDs: Joi.array().items(Joi.string().required()).min(1).max(100).required(),
 });
 
 /** List students in a batch whose alumni conversion failed. */
@@ -193,6 +193,6 @@ module.exports = {
 	GetPostUsersSchema,
 	RegisterDeviceTokenSchema,
 	GetNotificationsSchema,
-	ConvertStudentToAlumniSchema,
+	ConvertStudentsToAlumniSchema,
 	GetAlumniConversionFailuresSchema,
 };
