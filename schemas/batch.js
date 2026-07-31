@@ -160,8 +160,20 @@ const GetClassMaterialScopeSchema = Joi.object({
 
 /** Enqueue an async batch → alumni conversion job. Accepts one or more batch IDs. */
 const ConvertBatchToAlumniSchema = Joi.object({
-	batchIDs: Joi.array().items(Joi.string().required()).min(1).required(),
+	batchIDs: Joi.array().items(Joi.string().required()).min(1).unique().required(),
 	institutionID: Joi.string().required(),
+	/** Optional student refs (UUIDs or emails) to skip during conversion */
+	excludedStudentIDs: Joi.array().items(Joi.string().required()).optional(),
+});
+
+/** Paginated alumni-converted batches (COMPLETED_BATCHES entity) for an institution. */
+const GetAlumniConvertedBatchesSchema = Joi.object({
+	limit: Joi.number().required().min(1).max(10),
+	lastEvaluatedKey: Joi.alternatives().try(
+		Joi.string(),
+		Joi.object().unknown(true),
+		Joi.allow(null),
+	),
 });
 
 module.exports = {
@@ -180,4 +192,5 @@ module.exports = {
 	GetClassMaterialSchema,
 	GetClassMaterialScopeSchema,
 	ConvertBatchToAlumniSchema,
+	GetAlumniConvertedBatchesSchema,
 };
