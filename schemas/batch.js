@@ -166,6 +166,14 @@ const ConvertBatchToAlumniSchema = Joi.object({
 	excludedStudentIDs: Joi.array().items(Joi.string().required()).optional(),
 });
 
+/** Enqueue an async batch → alumni revert job. Accepts one or more batch IDs. */
+const RevertBatchFromAlumniSchema = Joi.object({
+	batchIDs: Joi.array().items(Joi.string().required()).min(1).unique().required(),
+	institutionID: Joi.string().required(),
+	/** Optional student refs (UUIDs or emails) to keep as alumni during revert */
+	excludedStudentIDs: Joi.array().items(Joi.string().required()).optional(),
+});
+
 /** Paginated alumni-converted batches (COMPLETED_BATCHES entity) for an institution. */
 const GetAlumniConvertedBatchesSchema = Joi.object({
 	limit: Joi.number().required().min(1).max(10),
@@ -192,5 +200,6 @@ module.exports = {
 	GetClassMaterialSchema,
 	GetClassMaterialScopeSchema,
 	ConvertBatchToAlumniSchema,
+	RevertBatchFromAlumniSchema,
 	GetAlumniConvertedBatchesSchema,
 };
