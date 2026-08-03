@@ -24,6 +24,7 @@ const {
 	RegisterDeviceTokenSchema,
 	GetNotificationsSchema,
 	ConvertStudentsToAlumniSchema,
+	RevertStudentsFromAlumniSchema,
 	GetAlumniConversionFailuresSchema,
 } = require('./user');
 const {
@@ -42,6 +43,7 @@ const {
 	GetClassMaterialSchema,
 	GetClassMaterialScopeSchema,
 	ConvertBatchToAlumniSchema,
+	RevertBatchFromAlumniSchema,
 	GetAlumniConvertedBatchesSchema,
 } = require('./batch');
 const {
@@ -106,6 +108,7 @@ module.exports = {
 	GetClassMaterialSchema,
 	GetClassMaterialScopeSchema,
 	ConvertBatchToAlumniSchema,
+	RevertBatchFromAlumniSchema,
 	GetAlumniConvertedBatchesSchema,
 	PostSchema,
 	EditPostSchema,
@@ -138,5 +141,6 @@ module.exports = {
 	RedeemCrapBulkTokenSchema,
 	DeactivateCrapBulkTokenSchema,
 	ConvertStudentsToAlumniSchema,
+	RevertStudentsFromAlumniSchema,
 	GetAlumniConversionFailuresSchema,
 };
