@@ -184,6 +184,17 @@ const GetAlumniConvertedBatchesSchema = Joi.object({
 	),
 });
 
+/**
+ * Keyset-paginated subjects hierarchy: one page of departments, each fully nested with
+ * specialisations → batches → subjects. Only the department list paginates.
+ */
+const GetSubjectsHierarchySchema = Joi.object({
+	/** ID of the last department the client has already seen; omit/empty for the first page */
+	cursor: Joi.string().trim().allow('', null).optional(),
+	/** Departments per page */
+	limit: Joi.number().optional().default(5).min(1).max(25),
+});
+
 module.exports = {
 	DepartmentSchema,
 	BulkDepartmentsSchema,
@@ -202,4 +213,5 @@ module.exports = {
 	ConvertBatchToAlumniSchema,
 	RevertBatchFromAlumniSchema,
 	GetAlumniConvertedBatchesSchema,
+	GetSubjectsHierarchySchema,
 };
