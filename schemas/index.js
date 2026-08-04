@@ -45,6 +45,7 @@ const {
 	ConvertBatchToAlumniSchema,
 	RevertBatchFromAlumniSchema,
 	GetAlumniConvertedBatchesSchema,
+	GetSubjectsHierarchySchema,
 } = require('./batch');
 const {
 	PostSchema,
@@ -110,6 +111,7 @@ module.exports = {
 	ConvertBatchToAlumniSchema,
 	RevertBatchFromAlumniSchema,
 	GetAlumniConvertedBatchesSchema,
+	GetSubjectsHierarchySchema,
 	PostSchema,
 	EditPostSchema,
 	DeletePostSchema,
