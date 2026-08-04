@@ -181,6 +181,15 @@ const GetAlumniConversionFailuresSchema = Joi.object({
 	),
 });
 
+/** Student adds/updates their own SGPA/CGPA for a semester (self-reported, 0-10). */
+const UpsertScoreSchema = Joi.object({
+	/** Semester number — safe max; most programs run 8-10 */
+	semester: Joi.number().integer().min(1).max(20),
+	sgpa: Joi.number().min(0).max(10).precision(2).required(),
+	cgpa: Joi.number().min(0).max(10).precision(2).required(),
+	semesterLabel: Joi.string().trim().max(50).optional(),
+});
+
 module.exports = {
 	AdminSchema,
 	StaffSchema,
@@ -201,4 +210,5 @@ module.exports = {
 	ConvertStudentsToAlumniSchema,
 	RevertStudentsFromAlumniSchema,
 	GetAlumniConversionFailuresSchema,
+	UpsertScoreSchema,
 };
