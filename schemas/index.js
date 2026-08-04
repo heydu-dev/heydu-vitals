@@ -26,6 +26,7 @@ const {
 	ConvertStudentsToAlumniSchema,
 	RevertStudentsFromAlumniSchema,
 	GetAlumniConversionFailuresSchema,
+	UpsertScoreSchema,
 } = require('./user');
 const {
 	DepartmentSchema,
@@ -145,4 +146,5 @@ module.exports = {
 	ConvertStudentsToAlumniSchema,
 	RevertStudentsFromAlumniSchema,
 	GetAlumniConversionFailuresSchema,
+	UpsertScoreSchema,
 };

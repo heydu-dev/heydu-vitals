@@ -164,6 +164,15 @@ module.exports = {
 					) {
 						statusBasedResponse(profile.status);
 					}
+					// Attach the verified identity so controllers never trust client-supplied IDs.
+					// `user` = decoded JWT payload (minted by buildTokenPayload): { email, profileTypeID, appType, tokenAudience, aud }.
+					// `profile` = the fresh DB row for that email fetched above (userAction.getByEmail).
+					// Prefer req.user.profile.profileTypeID over req.user.profileTypeID:
+					//   - req.user.profileTypeID is a token CLAIM — stale for the token's lifetime
+					//     (24h access / 365d refresh) and can be the string 'crap' for crap-audience tokens.
+					//   - req.user.profile.profileTypeID is the CURRENT value read from DynamoDB this request.
+					// This object is in-process only and never serialized unless a controller does so.
+					req.user = { ...user, profile };
 					return next();
 				} catch (e) {
 					console.log(e);
