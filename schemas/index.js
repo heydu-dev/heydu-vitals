@@ -5,6 +5,7 @@ const {
 	ProfileTypeSchema,
 	RoleSchema,
 	CountrySchema,
+	CollegeSchema,
 } = require('./utility');
 const {
 	StaffSchema,
@@ -100,6 +101,7 @@ module.exports = {
 	ProfileTypeSchema,
 	RoleSchema,
 	CountrySchema,
+	CollegeSchema,
 	StaffSchema,
 	BulkStaffSchema,
 	EditStaffSchema,

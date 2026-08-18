@@ -23,10 +23,17 @@ const CountrySchema = Joi.object({
 	showCountry: Joi.boolean().required(),
 });
 
+const CollegeSchema = Joi.object({
+	country: Joi.string().trim().required(),
+	collegeName: Joi.string().trim().required(),
+	urlStatus: Joi.string().valid('not_started', 'completed').required(),
+});
+
 module.exports = {
 	RoleSchema,
 	ProfileTypeSchema,
 	InstitutionTypeSchema,
 	DegreeSchema,
 	CountrySchema,
+	CollegeSchema,
 };
