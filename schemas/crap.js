@@ -147,24 +147,6 @@ const UpdateCrapSectionSchema = Joi.object({
 	order: Joi.number().integer().optional(),
 });
 
-const CrapQuestionSchema = Joi.object({
-	question: Joi.string().trim().required(),
-	options: Joi.array().items(Joi.string().trim().required()).length(4).required(),
-	correctAnswer: Joi.string().trim().required(),
-	sectionID: Joi.string().trim().allow('').optional(),
-	difficulty: Joi.string().trim().valid('Easy', 'Medium', 'Hard').optional(),
-	source: Joi.string().trim().valid('manual', 'ai').default('manual'),
-});
-
-const UpdateCrapQuestionSchema = Joi.object({
-	question: Joi.string().trim().optional(),
-	options: Joi.array().items(Joi.string().trim().required()).length(4).optional(),
-	correctAnswer: Joi.string().trim().optional(),
-	sectionID: Joi.string().trim().allow('').optional(),
-	difficulty: Joi.string().trim().valid('Easy', 'Medium', 'Hard').optional(),
-	source: Joi.string().trim().valid('manual', 'ai').optional(),
-});
-
 const CrapUploadPresignSchema = Joi.object({
 	topicSlug: Joi.string().trim().required(),
 	fileName: Joi.string().trim().required(),
@@ -195,6 +177,22 @@ const CrapProgressSchema = Joi.object({
 	state: Joi.object().pattern(Joi.string(), Joi.any()).required(),
 });
 
+const GenerateQuestionsSchema = Joi.object({
+	prompt: Joi.string().trim().required(),
+	moduleSlug: Joi.string().trim().optional(),
+	topicSlug: Joi.string().trim().optional(),
+});
+
+const GeneratePathSchema = Joi.object({
+	prompt: Joi.string().trim().required(),
+	questions: Joi.array().items(Joi.object({
+		question: Joi.string().required(),
+		options: Joi.array().items(Joi.string().required()).length(4).required(),
+		correctAnswer: Joi.string().required(),
+	})).required(),
+	selectedAnswers: Joi.array().items(Joi.string()).required(),
+});
+
 module.exports = {
 	CrapSignupSchema,
 	CrapQuestionsSchema,
@@ -208,12 +206,12 @@ module.exports = {
 	UpdateCrapModuleSchema,
 	CrapTopicSchema,
 	UpdateCrapTopicSchema,
-	CrapSectionSchema,
+ 	CrapSectionSchema,
 	UpdateCrapSectionSchema,
-	CrapQuestionSchema,
-	UpdateCrapQuestionSchema,
 	CrapUploadPresignSchema,
 	CrapUploadSaveSchema,
 	CrapMetadataSchema,
 	CrapProgressSchema,
+	GenerateQuestionsSchema,
+	GeneratePathSchema,
 };
