@@ -13,8 +13,10 @@ const LLM_TIMEOUT_MS = parseInt(process.env.LLM_TIMEOUT_MS || '100000', 10);
 function _getRequestPayload(messages, model) {
 	return JSON.stringify({
 		model: model || LLM_MODEL,
+		thinking: { type: 'disabled' },
+		// reasoning_effort: "low", // if thinking is enabled
 		messages,
-		temperature: 0.7,
+		response_format: { type: 'json_object' },
 		max_tokens: 8000,
 	});
 }
@@ -57,47 +59,6 @@ async function callLlm({ messages, model } = {}) {
 	return content;
 }
 
-/**
- * Extract a JSON object from an LLM response that may have surrounding
- * prose, fences, or code blocks. Retries once if parsing fails; throws
- * on the second attempt so the caller can retry the whole call.
- */
-function parseJsonFromLlmResponse(raw) {
-	let text = raw.trim();
-
-	if (text.startsWith('```')) {
-		const fenceEnd = text.indexOf('\n');
-		if (fenceEnd !== -1) {
-			text = text.slice(fenceEnd + 1);
-		}
-		const fenceStart = text.lastIndexOf('```');
-		if (fenceStart !== -1) {
-			text = text.slice(0, fenceStart);
-		}
-		text = text.trim();
-	}
-
-	try {
-		return JSON.parse(text);
-	} catch (e) {
-		// Try to find the first { and last } for a more lenient extraction
-		const firstBrace = text.indexOf('{');
-		const lastBrace = text.lastIndexOf('}');
-		if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
-			try {
-				return JSON.parse(text.slice(firstBrace, lastBrace + 1));
-			} catch (e2) {
-				// fall through to throw
-			}
-		}
-		const err = new Error(
-			`Failed to parse LLM JSON response: ${e.message}`,
-		);
-		err.rawResponse = raw;
-		throw err;
-	}
-}
-
 const QUESTIONS_SYSTEM_PROMPT =
 	'You are an education AI that generates multiple-choice quiz questions.' +
 	' Given a topic prompt, generate exactly 5-7 MCQ questions.' +
@@ -126,7 +87,7 @@ async function generateQuestions(prompt) {
 		],
 	});
 
-	const parsed = parseJsonFromLlmResponse(content);
+	const parsed = JSON.parse(content);
 
 	if (!parsed.questions || !Array.isArray(parsed.questions)) {
 		throw new Error('LLM response missing "questions" array');
@@ -159,7 +120,7 @@ async function generatePath(prompt, questions, selectedAnswers) {
 		],
 	});
 
-	const parsed = parseJsonFromLlmResponse(content);
+	const parsed = JSON.parse(content);
 
 	if (
 		!parsed.yourPath ||
@@ -177,7 +138,6 @@ async function generatePath(prompt, questions, selectedAnswers) {
 
 module.exports = {
 	callLlm,
-	parseJsonFromLlmResponse,
 	generateQuestions,
 	generatePath,
 };
