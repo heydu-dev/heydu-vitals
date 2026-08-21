@@ -59,85 +59,38 @@ async function callLlm({ messages, model } = {}) {
 	return content;
 }
 
-const QUESTIONS_SYSTEM_PROMPT =
-	'You are an education AI that generates multiple-choice quiz questions.' +
-	' Given a topic prompt, generate exactly 5-7 MCQ questions.' +
-	' Each question must have exactly 4 options (an array of 4 strings)' +
-	' and exactly one correct answer from those options.' +
-	' Return ONLY a JSON object in this exact format, no extra text:' +
-	' {"questions": [{"question": "string", "options": ["a","b","c","d"], "correctAnswer": "string", "difficulty": "Easy|Medium|Hard"}]}';
-
-const PATH_SYSTEM_PROMPT =
-	"You are a career guidance AI. Given a person's answers to career assessment questions," +
-	' generate a comparison of "Your Path" (what the person did)' +
-	' vs "Priya\'s Path" (the ideal recommended path).' +
-	' Each path should have exactly 5 distinct points.' +
-	' Return ONLY a JSON object in this exact format, no extra text:' +
-	' {"yourPath": [{"point": "string", "explanation": "string"}], "priyasPath": [{"point": "string", "explanation": "string"}]}';
-
-async function generateQuestions(prompt) {
+/**
+ * Both exercise and path generation now send a single user message — the
+ * admin's stored prompt (with course/year/cgpa placeholders already
+ * substituted by the caller). No system prompt: the admin's prompt text is
+ * responsible for specifying the desired JSON output shape.
+ */
+async function generateExercise(prompt) {
 	if (!prompt || typeof prompt !== 'string' || !prompt.trim()) {
 		throw new Error('prompt is required');
 	}
 
 	const content = await callLlm({
-		messages: [
-			{ role: 'system', content: QUESTIONS_SYSTEM_PROMPT },
-			{ role: 'user', content: prompt },
-		],
+		messages: [{ role: 'user', content: prompt }],
 	});
 
-	const parsed = JSON.parse(content);
-
-	if (!parsed.questions || !Array.isArray(parsed.questions)) {
-		throw new Error('LLM response missing "questions" array');
-	}
-
-	if (parsed.questions.length < 5 || parsed.questions.length > 7) {
-		throw new Error(
-			`LLM returned ${parsed.questions.length} questions, expected 5-7`,
-		);
-	}
-
-	return parsed;
+	return JSON.parse(content);
 }
 
-async function generatePath(prompt, questions, selectedAnswers) {
+async function generatePathComparison(prompt) {
 	if (!prompt || typeof prompt !== 'string' || !prompt.trim()) {
 		throw new Error('prompt is required');
 	}
 
-	const userContent = JSON.stringify(
-		{ prompt, questions, selectedAnswers },
-		null,
-		2,
-	);
-
 	const content = await callLlm({
-		messages: [
-			{ role: 'system', content: PATH_SYSTEM_PROMPT },
-			{ role: 'user', content: userContent },
-		],
+		messages: [{ role: 'user', content: prompt }],
 	});
 
-	const parsed = JSON.parse(content);
-
-	if (
-		!parsed.yourPath ||
-		!Array.isArray(parsed.yourPath) ||
-		!parsed.priyasPath ||
-		!Array.isArray(parsed.priyasPath)
-	) {
-		throw new Error(
-			'LLM response missing "yourPath" or "priyasPath" arrays',
-		);
-	}
-
-	return parsed;
+	return JSON.parse(content);
 }
 
 module.exports = {
 	callLlm,
-	generateQuestions,
-	generatePath,
+	generateExercise,
+	generatePathComparison,
 };

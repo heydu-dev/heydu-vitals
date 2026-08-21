@@ -19,7 +19,7 @@ const { normalizeEmailFromExcel } = require('./excel-email');
 const { enqueueEmail } = require('./email-queue');
 const { enqueueAlumniConversion, enqueueAlumniRevert } = require('./alumni-queue');
 const { enqueueLlmJob } = require('./llm-queue');
-const { callLlm, generateQuestions, generatePath } = require('./llm');
+const { callLlm, generateExercise, generatePathComparison } = require('./llm');
 
 module.exports = {
 	schemaCheck,
@@ -29,8 +29,8 @@ module.exports = {
 	enqueueAlumniRevert,
 	enqueueLlmJob,
 	callLlm,
-	generateQuestions,
-	generatePath,
+	generateExercise,
+	generatePathComparison,
 	USER_STATUS,
 	API_RESPONSES,
 	getApiResponse,

@@ -103,61 +103,24 @@ const DeactivateCrapBulkTokenSchema = Joi.object({
 
 // ---- CRAP dashboard v2 ----
 
-const CrapModuleSchema = Joi.object({
+const CrapV2ModuleSchema = Joi.object({
 	name: Joi.string().trim().required(),
-	slug: Joi.string().trim().optional(),
-	type: Joi.string()
-		.trim()
-		.valid('content', 'assessment', 'external')
-		.default('content'),
+	videoR2Key: Joi.string().trim().allow('').optional(),
+	exercisePrompt: Joi.string().trim().allow('').optional(),
+	pathPrompt: Joi.string().trim().allow('').optional(),
 	order: Joi.number().integer().optional(),
 });
 
-const UpdateCrapModuleSchema = Joi.object({
+const UpdateCrapV2ModuleSchema = Joi.object({
 	name: Joi.string().trim().optional(),
-	slug: Joi.string().trim().optional(),
-	type: Joi.string()
-		.trim()
-		.valid('content', 'assessment', 'external')
-		.optional(),
+	videoR2Key: Joi.string().trim().allow('').optional(),
+	exercisePrompt: Joi.string().trim().allow('').optional(),
+	pathPrompt: Joi.string().trim().allow('').optional(),
 	order: Joi.number().integer().optional(),
-});
+}).min(1);
 
-const CrapTopicSchema = Joi.object({
-	name: Joi.string().trim().required(),
-	slug: Joi.string().trim().optional(),
-	order: Joi.number().integer().optional(),
-});
-
-const UpdateCrapTopicSchema = Joi.object({
-	name: Joi.string().trim().optional(),
-	slug: Joi.string().trim().optional(),
-	order: Joi.number().integer().optional(),
-});
-
-const CrapSectionSchema = Joi.object({
-	title: Joi.string().trim().required(),
-	introVideoR2Key: Joi.string().trim().allow('').optional(),
-	order: Joi.number().integer().optional(),
-});
-
-const UpdateCrapSectionSchema = Joi.object({
-	title: Joi.string().trim().optional(),
-	introVideoR2Key: Joi.string().trim().allow('').optional(),
-	order: Joi.number().integer().optional(),
-});
-
-const CrapUploadPresignSchema = Joi.object({
-	topicSlug: Joi.string().trim().required(),
+const CrapVideoPresignSchema = Joi.object({
 	fileName: Joi.string().trim().required(),
-	contentType: Joi.string().trim().optional(),
-});
-
-const CrapUploadSaveSchema = Joi.object({
-	topicSlug: Joi.string().trim().required(),
-	r2Key: Joi.string().trim().required(),
-	fileName: Joi.string().trim().optional(),
-	size: Joi.number().integer().min(0).optional(),
 	contentType: Joi.string().trim().optional(),
 });
 
@@ -173,24 +136,25 @@ const CrapMetadataSchema = Joi.object({
 		.optional(),
 });
 
-const CrapProgressSchema = Joi.object({
-	state: Joi.object().pattern(Joi.string(), Joi.any()).required(),
-});
-
-const GenerateQuestionsSchema = Joi.object({
-	prompt: Joi.string().trim().required(),
-	moduleSlug: Joi.string().trim().optional(),
-	topicSlug: Joi.string().trim().optional(),
-});
-
-const GeneratePathSchema = Joi.object({
-	prompt: Joi.string().trim().required(),
+const CrapPathGenerateSchema = Joi.object({
+	exerciseId: Joi.string().trim().optional(),
 	questions: Joi.array().items(Joi.object({
+		id: Joi.string().trim().optional(),
 		question: Joi.string().required(),
-		options: Joi.array().items(Joi.string().required()).length(4).required(),
-		correctAnswer: Joi.string().required(),
-	})).required(),
-	selectedAnswers: Joi.array().items(Joi.string()).required(),
+		options: Joi.array().items(Joi.string()).required(),
+	})).optional(),
+	selectedAnswers: Joi.object().pattern(Joi.string(), Joi.any()).required(),
+}).or('exerciseId', 'questions').messages({
+	'object.missing': 'Either exerciseId (to resolve a stored exercise) or questions (to supply them directly) is required',
+});
+
+const CrapProgressUpsertSchema = Joi.object({
+	moduleId: Joi.string().trim().required(),
+	section: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
+	exerciseId: Joi.string().trim().optional(),
+	currentQuestion: Joi.number().integer().min(0).optional(),
+	answers: Joi.object().pattern(Joi.string(), Joi.any()).optional(),
+	completed: Joi.boolean().optional(),
 });
 
 module.exports = {
@@ -202,16 +166,10 @@ module.exports = {
 	CheckCrapBulkTokenEligibilitySchema,
 	RedeemCrapBulkTokenSchema,
 	DeactivateCrapBulkTokenSchema,
-	CrapModuleSchema,
-	UpdateCrapModuleSchema,
-	CrapTopicSchema,
-	UpdateCrapTopicSchema,
- 	CrapSectionSchema,
-	UpdateCrapSectionSchema,
-	CrapUploadPresignSchema,
-	CrapUploadSaveSchema,
+	CrapV2ModuleSchema,
+	UpdateCrapV2ModuleSchema,
+	CrapVideoPresignSchema,
 	CrapMetadataSchema,
-	CrapProgressSchema,
-	GenerateQuestionsSchema,
-	GeneratePathSchema,
+	CrapPathGenerateSchema,
+	CrapProgressUpsertSchema,
 };
