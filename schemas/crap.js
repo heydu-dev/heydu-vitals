@@ -108,6 +108,7 @@ const CrapV2ModuleSchema = Joi.object({
 	videoR2Key: Joi.string().trim().allow('').optional(),
 	exercisePrompt: Joi.string().trim().allow('').optional(),
 	pathPrompt: Joi.string().trim().allow('').optional(),
+	exerciseCount: Joi.number().integer().min(1).required(),
 	order: Joi.number().integer().optional(),
 });
 
@@ -116,6 +117,7 @@ const UpdateCrapV2ModuleSchema = Joi.object({
 	videoR2Key: Joi.string().trim().allow('').optional(),
 	exercisePrompt: Joi.string().trim().allow('').optional(),
 	pathPrompt: Joi.string().trim().allow('').optional(),
+	exerciseCount: Joi.number().integer().min(1).optional(),
 	order: Joi.number().integer().optional(),
 }).min(1);
 
@@ -138,18 +140,26 @@ const CrapMetadataSchema = Joi.object({
 
 const CrapPathGenerateSchema = Joi.object({
 	exerciseId: Joi.string().trim().optional(),
-	questions: Joi.array().items(Joi.object({
-		id: Joi.string().trim().optional(),
-		question: Joi.string().required(),
-		options: Joi.array().items(Joi.string()).required(),
-	})).optional(),
+	questions: Joi.array()
+		.items(
+			Joi.object({
+				id: Joi.string().trim().optional(),
+				question: Joi.string().required(),
+				options: Joi.array().items(Joi.string()).required(),
+			}),
+		)
+		.optional(),
 	selectedAnswers: Joi.object().pattern(Joi.string(), Joi.any()).required(),
-}).or('exerciseId', 'questions').messages({
-	'object.missing': 'Either exerciseId (to resolve a stored exercise) or questions (to supply them directly) is required',
-});
+})
+	.or('exerciseId', 'questions')
+	.messages({
+		'object.missing':
+			'Either exerciseId (to resolve a stored exercise) or questions (to supply them directly) is required',
+	});
 
 const CrapProgressUpsertSchema = Joi.object({
 	moduleId: Joi.string().trim().required(),
+	exerciseNumber: Joi.number().integer().min(1).required(),
 	section: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
 	exerciseId: Joi.string().trim().optional(),
 	currentQuestion: Joi.number().integer().min(0).optional(),
