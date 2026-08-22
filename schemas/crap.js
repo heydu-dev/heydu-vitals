@@ -103,12 +103,17 @@ const DeactivateCrapBulkTokenSchema = Joi.object({
 
 // ---- CRAP dashboard v2 ----
 
+// exerciseCount/pathPrompt/exercisePrompt are Section 2 (exercise-sequence)
+// concepts; `prompt` is for Section 3 (assessment) modules, which have no
+// exercise sequence. Same schema serves both — a module only sets the
+// fields relevant to its own section.
 const CrapV2ModuleSchema = Joi.object({
 	name: Joi.string().trim().required(),
 	videoR2Key: Joi.string().trim().allow('').optional(),
 	exercisePrompt: Joi.string().trim().allow('').optional(),
 	pathPrompt: Joi.string().trim().allow('').optional(),
-	exerciseCount: Joi.number().integer().min(1).required(),
+	exerciseCount: Joi.number().integer().min(1).optional(),
+	prompt: Joi.string().trim().allow('').optional(),
 	order: Joi.number().integer().optional(),
 });
 
@@ -118,8 +123,33 @@ const UpdateCrapV2ModuleSchema = Joi.object({
 	exercisePrompt: Joi.string().trim().allow('').optional(),
 	pathPrompt: Joi.string().trim().allow('').optional(),
 	exerciseCount: Joi.number().integer().min(1).optional(),
+	prompt: Joi.string().trim().allow('').optional(),
 	order: Joi.number().integer().optional(),
 }).min(1);
+
+// ---- CRAP dashboard v2: Section 3 (assessment) module question bank ----
+
+const CrapV2QuestionSchema = Joi.object({
+	question: Joi.string().trim().required(),
+	options: Joi.array().items(Joi.string().trim()).min(2).required(),
+	order: Joi.number().integer().optional(),
+});
+
+const UpdateCrapV2QuestionSchema = Joi.object({
+	question: Joi.string().trim().optional(),
+	options: Joi.array().items(Joi.string().trim()).min(2).optional(),
+	order: Joi.number().integer().optional(),
+}).min(1);
+
+/**
+ * Body for the AI-generated assessment question endpoint. `prompt` is
+ * built entirely client-side (frontend concatenates its own base prompt
+ * with the student's prior questions/answers) — the server treats it as
+ * an opaque string and forwards it to the LLM as-is, no substitution.
+ */
+const CrapAssessmentGenerateSchema = Joi.object({
+	prompt: Joi.string().trim().min(1).required(),
+});
 
 const CrapVideoPresignSchema = Joi.object({
 	fileName: Joi.string().trim().required(),
@@ -178,6 +208,9 @@ module.exports = {
 	DeactivateCrapBulkTokenSchema,
 	CrapV2ModuleSchema,
 	UpdateCrapV2ModuleSchema,
+	CrapV2QuestionSchema,
+	UpdateCrapV2QuestionSchema,
+	CrapAssessmentGenerateSchema,
 	CrapVideoPresignSchema,
 	CrapMetadataSchema,
 	CrapPathGenerateSchema,

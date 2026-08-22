@@ -89,8 +89,27 @@ async function generatePathComparison(prompt) {
 	return JSON.parse(content);
 }
 
+/**
+ * Generates one Section 3 (assessment) question. `prompt` is built entirely
+ * client-side (frontend concatenates its own hardcoded base prompt with the
+ * student's prior questions/answers) — passed through verbatim, same as
+ * exercise/path generation.
+ */
+async function generateAssessmentQuestion(prompt) {
+	if (!prompt || typeof prompt !== 'string' || !prompt.trim()) {
+		throw new Error('prompt is required');
+	}
+
+	const content = await callLlm({
+		messages: [{ role: 'user', content: prompt }],
+	});
+
+	return JSON.parse(content);
+}
+
 module.exports = {
 	callLlm,
 	generateExercise,
 	generatePathComparison,
+	generateAssessmentQuestion,
 };
