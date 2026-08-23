@@ -87,6 +87,7 @@ const {
 	CrapProgressUpsertSchema,
 	CrapAssessmentProgressUpsertSchema,
 	CrapCurrentSectionUpsertSchema,
+	CrapSectionPromptUpsertSchema,
 } = require('./crap');
 
 module.exports = {
@@ -167,6 +168,7 @@ module.exports = {
 	CrapProgressUpsertSchema,
 	CrapAssessmentProgressUpsertSchema,
 	CrapCurrentSectionUpsertSchema,
+	CrapSectionPromptUpsertSchema,
 	ConvertStudentsToAlumniSchema,
 	RevertStudentsFromAlumniSchema,
 	GetAlumniConversionFailuresSchema,

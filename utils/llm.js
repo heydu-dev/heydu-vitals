@@ -107,9 +107,28 @@ async function generateAssessmentQuestion(prompt) {
 	return JSON.parse(content);
 }
 
+/**
+ * Generates a Section 4 roadmap. `prompt` is the admin's stored
+ * section-wide prompt with course/year/cgpa/career placeholders already
+ * substituted by the caller — same single-user-message, no-system-prompt
+ * convention as exercise/path/assessment generation.
+ */
+async function generateRoadmap(prompt) {
+	if (!prompt || typeof prompt !== 'string' || !prompt.trim()) {
+		throw new Error('prompt is required');
+	}
+
+	const content = await callLlm({
+		messages: [{ role: 'user', content: prompt }],
+	});
+
+	return JSON.parse(content);
+}
+
 module.exports = {
 	callLlm,
 	generateExercise,
 	generatePathComparison,
 	generateAssessmentQuestion,
+	generateRoadmap,
 };

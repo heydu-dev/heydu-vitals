@@ -272,6 +272,15 @@ const CrapCurrentSectionUpsertSchema = Joi.object({
 	section: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
 });
 
+// A section's single admin-authored prompt (e.g. Section 4's roadmap
+// prompt) — not tied to a module, unlike Section 2's per-module
+// exercisePrompt/pathPrompt. Sent verbatim as the sole LLM user message
+// after placeholder substitution, so (like those) it must specify the
+// desired JSON output shape itself.
+const CrapSectionPromptUpsertSchema = Joi.object({
+	prompt: Joi.string().trim().min(1).required(),
+});
+
 module.exports = {
 	CrapSignupSchema,
 	CrapQuestionsSchema,
@@ -292,4 +301,5 @@ module.exports = {
 	CrapProgressUpsertSchema,
 	CrapAssessmentProgressUpsertSchema,
 	CrapCurrentSectionUpsertSchema,
+	CrapSectionPromptUpsertSchema,
 };
