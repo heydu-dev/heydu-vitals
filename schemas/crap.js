@@ -129,15 +129,68 @@ const UpdateCrapV2ModuleSchema = Joi.object({
 
 // ---- CRAP dashboard v2: Section 3 (assessment) module question bank ----
 
+// An option's `nextQuestionId` overrides the question's own `nextQuestionId`
+// when that option is selected; a question with neither set is a dead end
+// (last question on that path). Resolution: selectedOption.nextQuestionId
+// ?? question.nextQuestionId ?? null.
+const CrapV2QuestionOptionSchema = Joi.object({
+	id: Joi.string().trim().required(),
+	text: Joi.string().trim().required(),
+	nextQuestionId: Joi.string().trim().optional(),
+});
+
+const CrapV2QuestionFieldSchema = Joi.object({
+	id: Joi.string().trim().required(),
+	label: Joi.string().trim().required(),
+});
+
+// "select" (default): fixed admin-authored options, branch per option.
+// "ai_select": no static options — frontend generates choices at runtime via
+// the existing AI assessment-question job; can only branch via the
+// question-level nextQuestionId (choices aren't known ahead of time).
+// "form": a small free-text detail capture (`fields` instead of `options`),
+// no branching.
 const CrapV2QuestionSchema = Joi.object({
 	question: Joi.string().trim().required(),
-	options: Joi.array().items(Joi.string().trim()).min(2).required(),
+	// Cosmetic grouping label (e.g. "education", "overseas") — display only,
+	// doesn't affect branching or which module a question is stored under.
+	topic: Joi.string().trim().optional(),
+	// Marks the entry point of a module's question tree. Modules aren't
+	// backend-managed for Section 3, so the start lives on the question.
+	isStart: Joi.boolean().optional(),
+	nextQuestionId: Joi.string().trim().optional(),
+	type: Joi.string().valid('select', 'ai_select', 'form').default('select'),
+	options: Joi.array().items(CrapV2QuestionOptionSchema).min(2).when('type', {
+		is: 'select',
+		then: Joi.required(),
+		otherwise: Joi.forbidden(),
+	}),
+	multiSelect: Joi.boolean().when('type', {
+		is: 'ai_select',
+		then: Joi.optional(),
+		otherwise: Joi.forbidden(),
+	}),
+	fields: Joi.array().items(CrapV2QuestionFieldSchema).min(1).when('type', {
+		is: 'form',
+		then: Joi.required(),
+		otherwise: Joi.forbidden(),
+	}),
 	order: Joi.number().integer().optional(),
 });
 
+// Partial update — kept loose like the other Update* schemas: whatever
+// fields are sent get validated for shape, but there's no cross-field
+// type-vs-options/fields enforcement (the existing item may already be the
+// right shape; re-sending `type` alongside a change is on the caller).
 const UpdateCrapV2QuestionSchema = Joi.object({
 	question: Joi.string().trim().optional(),
-	options: Joi.array().items(Joi.string().trim()).min(2).optional(),
+	topic: Joi.string().trim().optional(),
+	isStart: Joi.boolean().optional(),
+	nextQuestionId: Joi.string().trim().optional(),
+	type: Joi.string().valid('select', 'ai_select', 'form').optional(),
+	options: Joi.array().items(CrapV2QuestionOptionSchema).min(2).optional(),
+	multiSelect: Joi.boolean().optional(),
+	fields: Joi.array().items(CrapV2QuestionFieldSchema).min(1).optional(),
 	order: Joi.number().integer().optional(),
 }).min(1);
 
@@ -197,6 +250,28 @@ const CrapProgressUpsertSchema = Joi.object({
 	completed: Joi.boolean().optional(),
 });
 
+// Section 3 (assessment) progress — moduleId/sectionId come from the URL
+// path (see PUT/GET .../modules/:moduleId/assessment-progress), not the
+// body. Unlike CrapProgressUpsertSchema there's no exerciseNumber: a
+// Section 3 module is one branching flow, not N numbered exercises.
+// answers values are opaque per question type (string / string[] / an
+// object keyed by field id for "form" questions) — same Joi.any() looseness
+// CrapProgressUpsertSchema already uses.
+const CrapAssessmentProgressUpsertSchema = Joi.object({
+	currentQuestionId: Joi.string().trim().optional(),
+	answers: Joi.object().pattern(Joi.string(), Joi.any()).optional(),
+	completed: Joi.boolean().optional(),
+}).min(1);
+
+// Explicitly set by the frontend when it decides a section is done and
+// moves the student forward — not derived/recomputed server-side from
+// module completion. `section` is opaque (whatever the frontend calls its
+// sections — "2", "3", ...), same alternatives() looseness as
+// CrapProgressUpsertSchema.section.
+const CrapCurrentSectionUpsertSchema = Joi.object({
+	section: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
+});
+
 module.exports = {
 	CrapSignupSchema,
 	CrapQuestionsSchema,
@@ -215,4 +290,6 @@ module.exports = {
 	CrapMetadataSchema,
 	CrapPathGenerateSchema,
 	CrapProgressUpsertSchema,
+	CrapAssessmentProgressUpsertSchema,
+	CrapCurrentSectionUpsertSchema,
 };
