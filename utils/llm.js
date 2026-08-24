@@ -125,10 +125,84 @@ async function generateRoadmap(prompt) {
 	return JSON.parse(content);
 }
 
+/**
+ * Section 5 (Entry Level) — Focus Areas: generates fundamental topics for
+ * one level (easy/medium/advanced). `prompt` is the admin's stored
+ * per-level prompt with course/year/cgpa/career placeholders already
+ * substituted — same single-user-message, no-system-prompt convention as
+ * generateRoadmap.
+ */
+async function generateFocusAreaTopics(prompt) {
+	if (!prompt || typeof prompt !== 'string' || !prompt.trim()) {
+		throw new Error('prompt is required');
+	}
+
+	const content = await callLlm({
+		messages: [{ role: 'user', content: prompt }],
+	});
+
+	return JSON.parse(content);
+}
+
+/**
+ * Section 5 (Entry Level) — Self Projects: generates 5 project ideas
+ * (name + description). Same convention as generateRoadmap.
+ */
+async function generateSelfProjects(prompt) {
+	if (!prompt || typeof prompt !== 'string' || !prompt.trim()) {
+		throw new Error('prompt is required');
+	}
+
+	const content = await callLlm({
+		messages: [{ role: 'user', content: prompt }],
+	});
+
+	return JSON.parse(content);
+}
+
+/**
+ * Section 5 (Entry Level) — Self Projects: generates the step-by-step guide
+ * for one already-generated project. `prompt` is the admin's stored guide
+ * prompt with course/year/cgpa/career placeholders substituted, plus the
+ * target project's name/description appended server-side (see
+ * getOrGenerateProjectGuideJob). Same convention as generateRoadmap.
+ */
+async function generateProjectGuide(prompt) {
+	if (!prompt || typeof prompt !== 'string' || !prompt.trim()) {
+		throw new Error('prompt is required');
+	}
+
+	const content = await callLlm({
+		messages: [{ role: 'user', content: prompt }],
+	});
+
+	return JSON.parse(content);
+}
+
+/**
+ * Section 5 (Entry Level) — Certifications: recommends 5 certificate
+ * courses. Same convention as generateRoadmap.
+ */
+async function generateCertificationRecommendations(prompt) {
+	if (!prompt || typeof prompt !== 'string' || !prompt.trim()) {
+		throw new Error('prompt is required');
+	}
+
+	const content = await callLlm({
+		messages: [{ role: 'user', content: prompt }],
+	});
+
+	return JSON.parse(content);
+}
+
 module.exports = {
 	callLlm,
 	generateExercise,
 	generatePathComparison,
 	generateAssessmentQuestion,
 	generateRoadmap,
+	generateFocusAreaTopics,
+	generateSelfProjects,
+	generateProjectGuide,
+	generateCertificationRecommendations,
 };
