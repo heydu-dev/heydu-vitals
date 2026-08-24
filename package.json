@@ -1,6 +1,6 @@
 {
 	"name": "heydu-vitals",
-	"version": "1.0.224",
+	"version": "1.0.225",
 	"description": "",
 	"main": "index.js",
 	"scripts": {
@@ -18,7 +18,7 @@
 		"@aws-sdk/client-s3": "^3.850.0",
 		"@aws-sdk/client-sqs": "^3.850.0",
 		"@aws-sdk/s3-request-presigner": "^3.850.0",
-		"data-wolf": "^1.0.293",
+		"data-wolf": "^1.0.294",
 		"ejs": "^3.1.10",
 		"joi": "^17.13.3",
 		"jsonwebtoken": "^9.0.2",

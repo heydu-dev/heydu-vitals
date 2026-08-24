@@ -144,40 +144,22 @@ const CrapV2QuestionFieldSchema = Joi.object({
 	label: Joi.string().trim().required(),
 });
 
+// Questions are only ever created via the seed script (straight to
+// DynamoDB, matching the "Section 3 modules aren't backend-managed"
+// convention) — there's no admin HTTP create endpoint. Update is the only
+// admin-facing mutation, so only that schema exists here.
+//
 // "select" (default): fixed admin-authored options, branch per option.
 // "ai_select": no static options — frontend generates choices at runtime via
 // the existing AI assessment-question job; can only branch via the
 // question-level nextQuestionId (choices aren't known ahead of time).
+// `prompt` (ai_select only): admin-authored prompt text for this question,
+// returned via GET so the frontend can merge it with the student's answers
+// before calling POST assessment-question — the generate endpoint itself
+// still just forwards whatever `prompt` string it's sent, unchanged.
 // "form": a small free-text detail capture (`fields` instead of `options`),
 // no branching.
-const CrapV2QuestionSchema = Joi.object({
-	question: Joi.string().trim().required(),
-	// Cosmetic grouping label (e.g. "education", "overseas") — display only,
-	// doesn't affect branching or which module a question is stored under.
-	topic: Joi.string().trim().optional(),
-	// Marks the entry point of a module's question tree. Modules aren't
-	// backend-managed for Section 3, so the start lives on the question.
-	isStart: Joi.boolean().optional(),
-	nextQuestionId: Joi.string().trim().optional(),
-	type: Joi.string().valid('select', 'ai_select', 'form').default('select'),
-	options: Joi.array().items(CrapV2QuestionOptionSchema).min(2).when('type', {
-		is: 'select',
-		then: Joi.required(),
-		otherwise: Joi.forbidden(),
-	}),
-	multiSelect: Joi.boolean().when('type', {
-		is: 'ai_select',
-		then: Joi.optional(),
-		otherwise: Joi.forbidden(),
-	}),
-	fields: Joi.array().items(CrapV2QuestionFieldSchema).min(1).when('type', {
-		is: 'form',
-		then: Joi.required(),
-		otherwise: Joi.forbidden(),
-	}),
-	order: Joi.number().integer().optional(),
-});
-
+//
 // Partial update — kept loose like the other Update* schemas: whatever
 // fields are sent get validated for shape, but there's no cross-field
 // type-vs-options/fields enforcement (the existing item may already be the
@@ -191,6 +173,7 @@ const UpdateCrapV2QuestionSchema = Joi.object({
 	options: Joi.array().items(CrapV2QuestionOptionSchema).min(2).optional(),
 	multiSelect: Joi.boolean().optional(),
 	fields: Joi.array().items(CrapV2QuestionFieldSchema).min(1).optional(),
+	prompt: Joi.string().trim().optional(),
 	order: Joi.number().integer().optional(),
 }).min(1);
 
@@ -292,7 +275,6 @@ module.exports = {
 	DeactivateCrapBulkTokenSchema,
 	CrapV2ModuleSchema,
 	UpdateCrapV2ModuleSchema,
-	CrapV2QuestionSchema,
 	UpdateCrapV2QuestionSchema,
 	CrapAssessmentGenerateSchema,
 	CrapVideoPresignSchema,
