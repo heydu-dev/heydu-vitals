@@ -195,6 +195,22 @@ async function generateCertificationRecommendations(prompt) {
 	return JSON.parse(content);
 }
 
+/**
+ * Section 6 (Internships): recommends internships tailored to the
+ * student's chosen career. Same convention as generateCertificationRecommendations.
+ */
+async function generateInternships(prompt) {
+	if (!prompt || typeof prompt !== 'string' || !prompt.trim()) {
+		throw new Error('prompt is required');
+	}
+
+	const content = await callLlm({
+		messages: [{ role: 'user', content: prompt }],
+	});
+
+	return JSON.parse(content);
+}
+
 module.exports = {
 	callLlm,
 	generateExercise,
@@ -205,4 +221,5 @@ module.exports = {
 	generateSelfProjects,
 	generateProjectGuide,
 	generateCertificationRecommendations,
+	generateInternships,
 };
