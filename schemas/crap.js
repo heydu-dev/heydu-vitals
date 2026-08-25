@@ -264,6 +264,50 @@ const CrapSectionPromptUpsertSchema = Joi.object({
 	prompt: Joi.string().trim().min(1).required(),
 });
 
+// ---- CRAP dashboard v2: Section 7 (Your CV) ----
+
+const CrapCvInternshipSchema = Joi.object({
+	companyName: Joi.string().trim().allow('').optional(),
+	role: Joi.string().trim().allow('').optional(),
+	startDate: Joi.string().trim().allow('').optional(),
+	endDate: Joi.string().trim().allow('').optional(),
+	description: Joi.string().trim().allow('').optional(),
+});
+
+const CrapCvProjectSchema = Joi.object({
+	title: Joi.string().trim().allow('').optional(),
+	technologies: Joi.string().trim().allow('').optional(),
+	description: Joi.string().trim().allow('').optional(),
+});
+
+const CrapCvCertificationSchema = Joi.object({
+	name: Joi.string().trim().allow('').optional(),
+	issuingOrganization: Joi.string().trim().allow('').optional(),
+	credentialUrl: Joi.string().trim().allow('').optional(),
+	dateObtained: Joi.string().trim().allow('').optional(),
+});
+
+// Full-overwrite on every POST — the frontend sends the complete up-to-date
+// form (including array fields), not a delta, same convention as
+// CrapAssessmentProgressUpsertSchema.answers.
+const CrapCvUpsertSchema = Joi.object({
+	fullName: Joi.string().trim().allow('').optional(),
+	email: Joi.string().trim().allow('').optional(),
+	phone: Joi.string().trim().allow('').optional(),
+	dateOfBirth: Joi.string().trim().allow('').optional(),
+	department: Joi.string().trim().allow('').optional(),
+	yearOfStudy: Joi.string().trim().allow('').optional(),
+	university: Joi.string().trim().allow('').optional(),
+	cgpa: Joi.string().trim().allow('').optional(),
+	technicalSkills: Joi.string().trim().allow('').optional(),
+	linkedinProfile: Joi.string().trim().allow('').optional(),
+	portfolioUrl: Joi.string().trim().allow('').optional(),
+	careerObjective: Joi.string().trim().allow('').optional(),
+	internships: Joi.array().items(CrapCvInternshipSchema).optional(),
+	projects: Joi.array().items(CrapCvProjectSchema).optional(),
+	certifications: Joi.array().items(CrapCvCertificationSchema).optional(),
+}).min(1);
+
 module.exports = {
 	CrapSignupSchema,
 	CrapQuestionsSchema,
@@ -284,4 +328,5 @@ module.exports = {
 	CrapAssessmentProgressUpsertSchema,
 	CrapCurrentSectionUpsertSchema,
 	CrapSectionPromptUpsertSchema,
+	CrapCvUpsertSchema,
 };
