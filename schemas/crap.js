@@ -206,6 +206,8 @@ const CrapMetadataSchema = Joi.object({
 
 const CrapPathGenerateSchema = Joi.object({
 	exerciseId: Joi.string().trim().optional(),
+	exerciseNumber: Joi.number().integer().min(1).optional(),
+	forceRefresh: Joi.boolean().optional(),
 	questions: Joi.array()
 		.items(
 			Joi.object({
@@ -230,6 +232,7 @@ const CrapProgressUpsertSchema = Joi.object({
 	exerciseId: Joi.string().trim().optional(),
 	currentQuestion: Joi.number().integer().min(0).optional(),
 	answers: Joi.object().pattern(Joi.string(), Joi.any()).optional(),
+	generatedPath: Joi.alternatives().try(Joi.object(), Joi.string(), Joi.array()).optional(),
 	completed: Joi.boolean().optional(),
 });
 
