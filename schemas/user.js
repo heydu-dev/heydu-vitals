@@ -79,6 +79,11 @@ const EditStaffSchema = Joi.object({
 	roleID: Joi.number(),
 });
 
+/** List-staff query: optional departmentID → server-side filter (GSI_3). No params → all institution staff. */
+const ListStaffQuerySchema = Joi.object({
+	departmentID: Joi.string().optional(),
+}).unknown(true);
+
 const StudentSchema = Joi.object({
 	name: Joi.string().required(),
 	startYear: Joi.date().iso().required(),
@@ -195,6 +200,7 @@ module.exports = {
 	StaffSchema,
 	BulkStaffSchema,
 	EditStaffSchema,
+	ListStaffQuerySchema,
 	StudentSchema,
 	EditStudentSchema,
 	FollowerSchema,
