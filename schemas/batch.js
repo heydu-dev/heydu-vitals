@@ -37,6 +37,11 @@ const GetBatchSchema = Joi.object({
 	specialisationID: Joi.string().optional(),
 	/** When set with department + specialisation, uses GSI_6 (batches for that section; empty = no section) */
 	section: Joi.string().allow('').optional(),
+	/** 4-axis filter: degree + batch year range. Exact-match strings; degree never maps to a batch GSI,
+	 *  so both are post-filtered in memory on each DynamoDB page (page may return fewer than `limit`). */
+	degreeID: Joi.string().optional(),
+	startYear: Joi.string().optional(),
+	endYear: Joi.string().optional(),
 	limit: Joi.number().required().max(10),
 	/** Query strings are always strings; gateway passes JSON-encoded DynamoDB key */
 	lastEvaluatedKey: Joi.alternatives().try(
@@ -45,6 +50,18 @@ const GetBatchSchema = Joi.object({
 		Joi.allow(null),
 	),
 });
+
+/**
+ * Optional narrowing params shared by the batch-filter dropdown endpoints. Any subset/combination
+ * is allowed — each endpoint narrows server-side by whatever filters are currently selected:
+ * degrees narrow by department/specialisation, departments by degree/specialisation,
+ * specialisations by degree/department, year-options by degree/department/specialisation.
+ */
+const BatchFilterOptionsSchema = Joi.object({
+	degreeID: Joi.string().optional(),
+	departmentID: Joi.string().optional(),
+	specialisationID: Joi.string().optional(),
+}).unknown(true);
 
 /** Permanently delete a batch: students, DynamoDB batch row, and S3 upload. */
 const DeleteBatchSchema = Joi.object({
@@ -201,6 +218,7 @@ module.exports = {
 	SpecialisationSchema,
 	BatchSchema,
 	GetBatchSchema,
+	BatchFilterOptionsSchema,
 	DeleteBatchSchema,
 	AdditionalStudentUploadSchema,
 	AddCourseSchema,
