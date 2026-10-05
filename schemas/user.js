@@ -84,6 +84,18 @@ const ListStaffQuerySchema = Joi.object({
 	departmentID: Joi.string().optional(),
 }).unknown(true);
 
+const GetStudentsSchema = Joi.object({
+	limit: Joi.number().required().min(1).max(50),
+	departmentID: Joi.string().optional(),
+	specialisationID: Joi.string().optional(),
+	batchID: Joi.string().optional(),
+	lastEvaluatedKey: Joi.alternatives().try(
+		Joi.string(),
+		Joi.object().unknown(true),
+		Joi.allow(null),
+	),
+});
+
 const StudentSchema = Joi.object({
 	name: Joi.string().required(),
 	startYear: Joi.date().iso().required(),
@@ -201,6 +213,7 @@ module.exports = {
 	BulkStaffSchema,
 	EditStaffSchema,
 	ListStaffQuerySchema,
+	GetStudentsSchema,
 	StudentSchema,
 	EditStudentSchema,
 	FollowerSchema,
