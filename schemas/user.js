@@ -112,13 +112,35 @@ const StudentSchema = Joi.object({
 	isAlumni: Joi.boolean().optional(),
 });
 
+/** Rules mirror the student Excel upload (s3-sheet-data-processor/utility/excel.js). */
+const studentPhone = Joi.string().trim().replace(/[\s()-]/g, '').pattern(/^\+?\d{10,15}$/, 'phone (10-15 digits)');
+const studentDigits = Joi.string().trim().replace(/[\s-]/g, '').pattern(/^\d+$/, 'digits');
+
+/**
+ * Student profile edit. Email and placement fields (batch / department / specialisation /
+ * degree / years) are not editable here. `null` on an optional field removes it.
+ */
 const EditStudentSchema = Joi.object({
-	name: Joi.string(),
-	alternateEmail: Joi.string(),
-	phone: Joi.string(),
-	profileImageKey: Joi.string().optional(),
-	bannerImageKey: Joi.string().optional(),
-});
+	name: Joi.string().trim(),
+	registrationNumber: Joi.string().trim().pattern(/^[A-Za-z0-9][A-Za-z0-9/._-]*$/, 'alphanumeric'),
+	alternateEmail: Joi.string().email().trim().lowercase().allow(null),
+	phone: studentPhone.allow(null),
+	gender: Joi.string()
+		.trim()
+		.uppercase()
+		.pattern(/^(M|F|MALE|FEMALE)$/, 'M or F')
+		.custom((value) => value.charAt(0))
+		.allow(null),
+	parentName: Joi.string().trim().allow(null),
+	parentEmail: Joi.string().email().trim().lowercase().allow(null),
+	parentPhone: studentPhone.allow(null),
+	address: Joi.string().trim().allow(null),
+	aadhaarNumber: Joi.string().trim().replace(/[\s-]/g, '').pattern(/^\d{12}$/, '12 digits').allow(null),
+	pen: studentDigits.allow(null),
+	apaarID: studentDigits.allow(null),
+	profileImageKey: Joi.string().allow(null),
+	bannerImageKey: Joi.string().allow(null),
+}).min(1);
 
 const FollowerSchema = Joi.object({
 	followingID: Joi.string().required(), // ID of the user being followed (if applicable)
