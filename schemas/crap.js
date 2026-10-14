@@ -159,6 +159,8 @@ const CrapV2QuestionFieldSchema = Joi.object({
 // still just forwards whatever `prompt` string it's sent, unchanged.
 // "form": a small free-text detail capture (`fields` instead of `options`),
 // no branching.
+// "text": a single free-text answer typed by the student — no options, AI
+// choices or fields; only the question-level nextQuestionId.
 //
 // Partial update — kept loose like the other Update* schemas: whatever
 // fields are sent get validated for shape, but there's no cross-field
@@ -169,7 +171,7 @@ const UpdateCrapV2QuestionSchema = Joi.object({
 	topic: Joi.string().trim().optional(),
 	isStart: Joi.boolean().optional(),
 	nextQuestionId: Joi.string().trim().optional(),
-	type: Joi.string().valid('select', 'ai_select', 'form').optional(),
+	type: Joi.string().valid('select', 'ai_select', 'form', 'text').optional(),
 	options: Joi.array().items(CrapV2QuestionOptionSchema).min(2).optional(),
 	multiSelect: Joi.boolean().optional(),
 	fields: Joi.array().items(CrapV2QuestionFieldSchema).min(1).optional(),
