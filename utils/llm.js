@@ -211,6 +211,23 @@ async function generateInternships(prompt) {
 	return JSON.parse(content);
 }
 
+/**
+ * Overseas section: countries, colleges, admission documents and visa
+ * documents all share this one call — the admin prompt dictates the shape
+ * and the worker validates it per kind. Same convention as generateInternships.
+ */
+async function generateOverseasRecommendations(prompt) {
+	if (!prompt || typeof prompt !== 'string' || !prompt.trim()) {
+		throw new Error('prompt is required');
+	}
+
+	const content = await callLlm({
+		messages: [{ role: 'user', content: prompt }],
+	});
+
+	return JSON.parse(content);
+}
+
 module.exports = {
 	callLlm,
 	generateExercise,
@@ -222,4 +239,5 @@ module.exports = {
 	generateProjectGuide,
 	generateCertificationRecommendations,
 	generateInternships,
+	generateOverseasRecommendations,
 };
