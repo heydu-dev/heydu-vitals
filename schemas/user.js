@@ -135,6 +135,20 @@ const AdminSchema = Joi.object({
 	name: Joi.string().required(),
 	profileImageKey: Joi.string().optional(),
 	bannerImageKey: Joi.string().optional(),
+	roleIDs: Joi.array().items(Joi.string().trim().min(1).max(100)).unique().max(50),
+});
+
+const AdminRoleAssignmentSchema = Joi.object({
+	roleIDs: Joi.array().items(Joi.string().trim().min(1).max(100)).unique().min(1).max(50).required(),
+});
+
+const UserRoleAssignmentSchema = Joi.object({
+	profileTypeID: Joi.number().integer().valid(0, 1, 2, 3, 4).required(),
+	roleIDs: Joi.array().items(Joi.string().trim().min(1).max(100)).unique().max(50).required(),
+});
+
+const RoleAssigneeSearchSchema = Joi.object({
+	email: Joi.string().email().trim().lowercase().required(),
 });
 
 const GetProfileKeySignedUrlsSchema = Joi.object({
@@ -197,6 +211,9 @@ const UpsertScoreSchema = Joi.object({
 
 module.exports = {
 	AdminSchema,
+	AdminRoleAssignmentSchema,
+	UserRoleAssignmentSchema,
+	RoleAssigneeSearchSchema,
 	StaffSchema,
 	BulkStaffSchema,
 	EditStaffSchema,
