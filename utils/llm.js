@@ -145,8 +145,9 @@ async function generateFocusAreaTopics(prompt) {
 }
 
 /**
- * Section 5 (Entry Level) — Self Projects: generates 5 project ideas
- * (name + description). Same convention as generateRoadmap.
+ * Section 5 (Entry Level) — Self Projects: generates 3 industries for the
+ * student's career, each with one project per requested level
+ * (easy/medium/advanced). Same convention as generateRoadmap.
  */
 async function generateSelfProjects(prompt) {
 	if (!prompt || typeof prompt !== 'string' || !prompt.trim()) {
@@ -164,7 +165,7 @@ async function generateSelfProjects(prompt) {
  * Section 5 (Entry Level) — Self Projects: generates the step-by-step guide
  * for one already-generated project. `prompt` is the admin's stored guide
  * prompt with course/year/cgpa/career placeholders substituted, plus the
- * target project's name/description appended server-side (see
+ * target project's industry/level/name/description appended server-side (see
  * getOrGenerateProjectGuideJob). Same convention as generateRoadmap.
  */
 async function generateProjectGuide(prompt) {
