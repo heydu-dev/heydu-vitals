@@ -87,6 +87,54 @@ const AddCourseSchema = Joi.object({
 	name: Joi.string().required(),
 });
 
+/**
+ * HOD subject setup. `academicYear` is 1-4 and `semester` is 1-2; the legacy
+ * `semesterYear` field is derived from `academicYear` by the controller.
+ */
+const CreateSubjectSchema = Joi.object({
+	departmentID: Joi.string().required(),
+	specialisationID: Joi.string().required(),
+	batchID: Joi.string().required(),
+	academicYear: Joi.string().valid('1', '2', '3', '4').required(),
+	semester: Joi.string().valid('1', '2').required(),
+	code: Joi.string().trim().required(),
+	name: Joi.string().trim().required(),
+	type: Joi.string().valid('Core', 'Elective', 'Lab', 'Project').default('Core'),
+	status: Joi.string().valid('Active', 'Inactive').default('Active'),
+	credits: Joi.number().min(0).optional(),
+	tag: Joi.string().optional(),
+});
+
+/**
+ * Only the editable attributes are accepted. The department / specialisation /
+ * batch / year / semester context is immutable after creation, so a subject
+ * cannot be moved and orphan its materials.
+ */
+const UpdateSubjectSchema = Joi.object({
+	code: Joi.string().trim().optional(),
+	name: Joi.string().trim().optional(),
+	type: Joi.string().valid('Core', 'Elective', 'Lab', 'Project').optional(),
+	status: Joi.string().valid('Active', 'Inactive').optional(),
+	credits: Joi.number().min(0).optional(),
+})
+	.min(1)
+	.unknown(false);
+
+const GetSubjectsSchema = Joi.object({
+	departmentID: Joi.string().required(),
+	specialisationID: Joi.string().allow('').optional(),
+	batchID: Joi.string().allow('').optional(),
+	academicYear: Joi.string().valid('1', '2', '3', '4').allow('').optional(),
+	semester: Joi.string().valid('1', '2').allow('').optional(),
+	status: Joi.string().valid('Active', 'Inactive').allow('').optional(),
+	type: Joi.string().valid('Core', 'Elective', 'Lab', 'Project').allow('').optional(),
+	search: Joi.string().trim().allow('').optional(),
+	limit: Joi.number().optional().default(20).min(1).max(50),
+	lastEvaluatedKey: Joi.alternatives()
+		.try(Joi.string().allow(''), Joi.object().unknown(true), Joi.allow(null))
+		.optional(),
+});
+
 /** Request presigned PUT URLs before upload — no r2Key yet */
 const ClassMaterialPresignSchema = Joi.object({
 	uploadedBy: Joi.string().required(),
@@ -94,6 +142,10 @@ const ClassMaterialPresignSchema = Joi.object({
 		.items(
 			Joi.object({
 				name: Joi.string().optional(),
+				/** materials | assignments — defaults to `material` for legacy callers */
+				kind: Joi.string().valid('material', 'assignment').default('material'),
+				title: Joi.string().trim().allow('').optional(),
+				description: Joi.string().trim().allow('').optional(),
 				institutionID: Joi.string().required(),
 				fileExtension: Joi.string().required(),
 				courseID: Joi.string().required(),
@@ -116,6 +168,10 @@ const AddClassMaterialSchema = Joi.object({
 		.items(
 			Joi.object({
 				name: Joi.string().required(),
+				/** materials | assignments — defaults to `material` for legacy callers */
+				kind: Joi.string().valid('material', 'assignment').default('material'),
+				title: Joi.string().trim().allow('').optional(),
+				description: Joi.string().trim().allow('').optional(),
 				institutionID: Joi.string().required(),
 				fileExtension: Joi.string().required(),
 				courseID: Joi.string().required(),
@@ -154,6 +210,8 @@ const GetClassMaterialSchema = Joi.object({
 	institutionID: Joi.string(),
 	batchID: Joi.string(),
 	year: Joi.string(),
+	/** Omit to return both materials and assignments */
+	kind: Joi.string().valid('material', 'assignment').optional(),
 	limit: Joi.number().required().max(10),
 	lastEvaluatedKey: Joi.alternatives().try(
 		Joi.object().unknown(true),
@@ -167,6 +225,8 @@ const GetClassMaterialScopeSchema = Joi.object({
 	batchID: Joi.string().required(),
 	year: Joi.string().required(),
 	courseID: Joi.string().required(),
+	/** Omit to return both materials and assignments */
+	kind: Joi.string().valid('material', 'assignment').optional(),
 	limit: Joi.number().required().max(10),
 	lastEvaluatedKey: Joi.alternatives().try(
 		Joi.string(),
@@ -222,6 +282,9 @@ module.exports = {
 	DeleteBatchSchema,
 	AdditionalStudentUploadSchema,
 	AddCourseSchema,
+	CreateSubjectSchema,
+	UpdateSubjectSchema,
+	GetSubjectsSchema,
 	ClassMaterialPresignSchema,
 	AddClassMaterialSchema,
 	DeleteClassMaterialSchema,
