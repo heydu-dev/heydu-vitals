@@ -1,5 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 const Joi = require('joi');
+const roleUUIDSchema = Joi.string().guid();
 
 const PostSchema = Joi.object({
 	description: Joi.string().max(300).allow('').allow(null),
@@ -14,10 +15,11 @@ const PostSchema = Joi.object({
 		.default([])
 		.required(),
 	circleType: Joi.string().required(),
-	postUserID: Joi.string().required(), // User ID of the person who created the post: Joi.number().valid(0, 1, 2, 3).required(),
-	postUserTypeID: Joi.number().required(),
-	postUserEmail: Joi.string().email().required(),
-	postUserRoleID: Joi.number().required(),
+	postUserID: Joi.string().optional(), // Derived from the authenticated profile.
+	postUserTypeID: Joi.number().optional(),
+	postUserEmail: Joi.string().email().optional(),
+	postUserRoleID: Joi.number().optional(), // Legacy compatibility only
+	postUserRoleIDs: Joi.array().items(roleUUIDSchema).unique().max(50).optional(),
 	institutionID: Joi.string()
 		.guid({ version: ['uuidv5', 'uuidv7'] })
 		.required(),
@@ -41,7 +43,9 @@ const EditPostSchema = Joi.object({
 });
 
 const DeletePostSchema = Joi.object({
-	deletedByUserRoleID: Joi.number().required(),
+	// Deprecated compatibility field. Authorization is derived from the
+	// authenticated profile's UUID role assignments, never from this client value.
+	deletedByUserRoleID: Joi.number().optional(),
 });
 
 const GetPutObjectSignedUrlSchema = Joi.object({
@@ -165,9 +169,10 @@ const CommentSchema = Joi.object({
 		.required(),
 	commentingProfileUserID: Joi.string()
 		.guid({ version: ['uuidv5', 'uuidv7'] })
-		.required(),
-	commentingProfileTypeID: Joi.number().required(),
-	commentingProfileRoleID: Joi.number().required(),
+		.optional(), // Derived from the authenticated profile.
+	commentingProfileTypeID: Joi.number().optional(),
+	commentingProfileRoleID: Joi.number().optional(), // Legacy compatibility only
+	commentingProfileRoleIDs: Joi.array().items(roleUUIDSchema).unique().max(50).optional(),
 	parentCommentID: Joi.string()
 		.guid({ version: ['uuidv5', 'uuidv7'] })
 		.optional(),

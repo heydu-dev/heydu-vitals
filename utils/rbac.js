@@ -53,6 +53,8 @@ async function getPermissionCatalog() {
 async function getEffectivePermissions(profile) {
 	if (!profile) return [];
 	const roleIDs = uniqueStrings(profile.roleIDs);
+	// Assigned UUID role IDs are authoritative for every profile type, including
+	// staff moderators. Do not mix in the legacy numeric StaffEntity.roleID.
 	// Existing Heydu admins predate RBAC. Keep them as owners until an explicit
 	// role assignment is made; assigned admins are restricted to their roles.
 	if (Number(profile.profileTypeID) === 4 && roleIDs.length === 0) {

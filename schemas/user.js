@@ -1,6 +1,7 @@
 const Joi = require('joi');
 
 const uuidSchema = Joi.string().guid({ version: ['uuidv5', 'uuidv7'] });
+const roleUUIDSchema = Joi.string().guid();
 
 const RegisterDeviceTokenSchema = Joi.object({
 	deviceToken: Joi.string().required(),
@@ -169,16 +170,16 @@ const AdminSchema = Joi.object({
 	name: Joi.string().required(),
 	profileImageKey: Joi.string().optional(),
 	bannerImageKey: Joi.string().optional(),
-	roleIDs: Joi.array().items(Joi.string().trim().min(1).max(100)).unique().max(50),
+	roleIDs: Joi.array().items(roleUUIDSchema).unique().max(50),
 });
 
 const AdminRoleAssignmentSchema = Joi.object({
-	roleIDs: Joi.array().items(Joi.string().trim().min(1).max(100)).unique().min(1).max(50).required(),
+	roleIDs: Joi.array().items(roleUUIDSchema).unique().min(1).max(50).required(),
 });
 
 const UserRoleAssignmentSchema = Joi.object({
 	profileTypeID: Joi.number().integer().valid(0, 1, 2, 3, 4).required(),
-	roleIDs: Joi.array().items(Joi.string().trim().min(1).max(100)).unique().max(50).required(),
+	roleIDs: Joi.array().items(roleUUIDSchema).unique().max(50).required(),
 });
 
 const RoleAssigneeSearchSchema = Joi.object({
