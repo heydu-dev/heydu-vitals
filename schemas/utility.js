@@ -1,7 +1,6 @@
 const Joi = require('joi');
 
 const RoleSchema = Joi.object({
-	key: Joi.string().trim().lowercase().pattern(/^[a-z][a-z0-9_.-]{1,79}$/),
 	name: Joi.string().trim().required(),
 	description: Joi.string().trim().allow('').default(''),
 	permissions: Joi.array().items(Joi.string().trim().min(2).max(100)).unique().max(100).default([]),

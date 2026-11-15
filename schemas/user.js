@@ -77,7 +77,7 @@ const EditStaffSchema = Joi.object({
 	profileImageKey: Joi.string().optional(),
 	bannerImageKey: Joi.string().optional(),
 	designation: Joi.string().trim(),
-	roleID: Joi.number(),
+	roleIDs: Joi.array().items(roleUUIDSchema).unique().max(50),
 });
 
 /** List-staff query: optional departmentID → server-side filter (GSI_3). No params → all institution staff. */

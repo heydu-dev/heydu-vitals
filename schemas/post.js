@@ -18,7 +18,6 @@ const PostSchema = Joi.object({
 	postUserID: Joi.string().optional(), // Derived from the authenticated profile.
 	postUserTypeID: Joi.number().optional(),
 	postUserEmail: Joi.string().email().optional(),
-	postUserRoleID: Joi.number().optional(), // Legacy compatibility only
 	postUserRoleIDs: Joi.array().items(roleUUIDSchema).unique().max(50).optional(),
 	institutionID: Joi.string()
 		.guid({ version: ['uuidv5', 'uuidv7'] })
@@ -42,11 +41,7 @@ const EditPostSchema = Joi.object({
 	isHidden: Joi.boolean().optional(),
 });
 
-const DeletePostSchema = Joi.object({
-	// Deprecated compatibility field. Authorization is derived from the
-	// authenticated profile's UUID role assignments, never from this client value.
-	deletedByUserRoleID: Joi.number().optional(),
-});
+const DeletePostSchema = Joi.object({});
 
 const GetPutObjectSignedUrlSchema = Joi.object({
 	keys: Joi.array()
@@ -171,7 +166,6 @@ const CommentSchema = Joi.object({
 		.guid({ version: ['uuidv5', 'uuidv7'] })
 		.optional(), // Derived from the authenticated profile.
 	commentingProfileTypeID: Joi.number().optional(),
-	commentingProfileRoleID: Joi.number().optional(), // Legacy compatibility only
 	commentingProfileRoleIDs: Joi.array().items(roleUUIDSchema).unique().max(50).optional(),
 	parentCommentID: Joi.string()
 		.guid({ version: ['uuidv5', 'uuidv7'] })
