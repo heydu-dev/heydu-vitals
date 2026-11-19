@@ -1,5 +1,6 @@
 const { utilityAction, userAction } = require('data-wolf');
 const { PERMISSIONS, PERMISSION_KEYS } = require('./permission-catalog');
+const { SYSTEM_ROLE_DEFINITIONS } = require('./system-roles');
 
 const DEFAULT_SELF_SERVICE_PERMISSIONS = [
 	'batch.read',
@@ -53,6 +54,7 @@ async function getPermissionCatalog() {
 async function getEffectivePermissions(profile) {
 	if (!profile) return [];
 	const roleIDs = uniqueStrings(profile.roleIDs);
+	profile.effectiveRoleScopes = [];
 	// Assigned UUID role IDs are authoritative for every profile type, including
 	// staff moderators; role resolution uses the UUID key only.
 	// Existing Heydu admins predate RBAC. Keep them as owners until an explicit
@@ -67,14 +69,124 @@ async function getEffectivePermissions(profile) {
 	}
 
 	const roles = await Promise.all(roleIDs.map((id) => utilityAction.getRoleByID(id)));
+	const activeRoles = roles.filter((role) => role && role.active !== false);
+	profile.effectiveRoleScopes = uniqueStrings(activeRoles.map((role) => role.scope));
 	const catalog = await getPermissionCatalog();
 	const activeKeys = new Set(catalog.filter((permission) => permission.active !== false).map((permission) => permission.key));
+	if (activeRoles.some((role) => role.key === 'heydu_admin')) {
+		return catalog.filter((permission) => permission.active !== false).map((permission) => permission.key);
+	}
 	const rolePermissions = uniqueStrings(
-		roles
-			.filter((role) => role && role.active !== false)
-			.flatMap((role) => (Array.isArray(role.permissions) ? role.permissions : [])),
+		activeRoles.flatMap((role) => (Array.isArray(role.permissions) ? role.permissions : [])),
 	).filter((permissionKey) => activeKeys.has(permissionKey));
 	return rolePermissions;
+}
+
+function requireInstitutionScope(resolveInstitutionIDs) {
+	return async (req, res, next) => {
+		try {
+			const profile = req.user && req.user.profile;
+			const scopes = uniqueStrings(profile && profile.effectiveRoleScopes);
+			if (!scopes.includes('institution') || scopes.includes('global')) return next();
+
+			const ownInstitutionID = profile && profile.institutionID;
+			if (!ownInstitutionID) {
+				return res.status(403).json({
+					success: false,
+					status: 403,
+					code: 'FORBIDDEN',
+					message: 'Your College Admin role is not linked to a college.',
+				});
+			}
+
+			const explicitInstitutionIDs = [
+				req.params && req.params.institutionID,
+				req.body && req.body.institutionID,
+				req.query && req.query.institutionID,
+				...((req.body && Array.isArray(req.body.materials))
+					? req.body.materials.map((material) => material && material.institutionID)
+					: []),
+			];
+			const resolved = typeof resolveInstitutionIDs === 'function'
+				? await resolveInstitutionIDs(req)
+				: [];
+			const institutionIDs = uniqueStrings([
+				...explicitInstitutionIDs,
+				...(Array.isArray(resolved) ? resolved : [resolved]),
+			]);
+			if (!institutionIDs.length || institutionIDs.some((id) => String(id) !== String(ownInstitutionID))) {
+				return res.status(403).json({
+					success: false,
+					status: 403,
+					code: 'FORBIDDEN',
+					message: 'College Admins can only access data for their assigned college.',
+				});
+			}
+			return next();
+		} catch (error) {
+			return next(error);
+		}
+	};
+}
+
+async function ensureSystemRoles() {
+	const [roles, catalog] = await Promise.all([
+		utilityAction.getAllRoles(),
+		getPermissionCatalog(),
+	]);
+	const activePermissionKeys = catalog
+		.filter((permission) => permission.active !== false)
+		.map((permission) => permission.key);
+	const activePermissionSet = new Set(activePermissionKeys);
+	const now = new Date().toISOString();
+
+	for (const definition of SYSTEM_ROLE_DEFINITIONS) {
+		const permissions = definition.key === 'heydu_admin'
+			? activePermissionKeys
+			: definition.permissions.filter((permission) => activePermissionSet.has(permission));
+		const existing = roles.find((role) =>
+			role.key === definition.key
+			|| String(role.name || '').trim().toLowerCase() === definition.name.toLowerCase()
+		);
+		const fixedIDCollision = roles.find((role) => String(role.id) === definition.id);
+		if (!existing && fixedIDCollision) {
+			throw new Error(`Cannot provision system role ${definition.key}: its fixed UUID is already in use`);
+		}
+		const roleDetails = {
+			key: definition.key,
+			scope: definition.scope,
+			name: definition.name,
+			description: definition.description,
+			permissions,
+			active: true,
+			isSystem: true,
+			updatedAt: now,
+			updatedBy: 'system',
+		};
+
+		if (!existing) {
+			await utilityAction.addRoleDetails({
+				...roleDetails,
+				id: definition.id,
+				createdAt: now,
+				createdBy: 'system',
+			});
+			continue;
+		}
+
+		const unchanged = existing.key === roleDetails.key
+			&& existing.scope === roleDetails.scope
+			&& existing.name === roleDetails.name
+			&& existing.description === roleDetails.description
+			&& existing.active !== false
+			&& existing.isSystem === true
+			&& JSON.stringify(existing.permissions || []) === JSON.stringify(permissions);
+		if (!unchanged) {
+			await utilityAction.updateRoleDetails(existing.id, roleDetails);
+		}
+	}
+
+	return utilityAction.getAllRoles();
 }
 
 function requirePermission(requiredPermission) {
@@ -133,4 +245,11 @@ async function hasActiveRoleManager({ roleOverrides = {}, adminOverrides = {} } 
 	});
 }
 
-module.exports = { getPermissionCatalog, getEffectivePermissions, requirePermission, hasActiveRoleManager };
+module.exports = {
+	getPermissionCatalog,
+	getEffectivePermissions,
+	requirePermission,
+	requireInstitutionScope,
+	ensureSystemRoles,
+	hasActiveRoleManager,
+};

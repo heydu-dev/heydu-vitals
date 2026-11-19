@@ -9,7 +9,7 @@ const {
 	ErrorHandler,
 } = require('./api-response-handler');
 const { generateJWT, authenticateJWT, STATUS } = require('./jwt-session');
-const { getPermissionCatalog, getEffectivePermissions, requirePermission, hasActiveRoleManager } = require('./rbac');
+const { getPermissionCatalog, getEffectivePermissions, requirePermission, requireInstitutionScope, ensureSystemRoles, hasActiveRoleManager } = require('./rbac');
 const awsS3Helper = require('./aws-s3-helper');
 const {
 	MAX_FOLLOWER_SHARDS,
@@ -48,6 +48,8 @@ module.exports = {
 	getPermissionCatalog,
 	getEffectivePermissions,
 	requirePermission,
+	requireInstitutionScope,
+	ensureSystemRoles,
 	hasActiveRoleManager,
 	awsS3Helper,
 	MAX_FOLLOWER_SHARDS,
