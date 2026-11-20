@@ -1,0 +1,178 @@
+name: Publish Heydu Vitals
+
+on:
+  workflow_run:
+    workflows: [PR CI]
+    types: [completed]
+
+permissions:
+  actions: read
+  contents: read
+  pull-requests: read
+
+jobs:
+  release-plan:
+    name: Check merged package changes
+    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'pull_request'
+    runs-on: ubuntu-latest
+    outputs:
+      publish: ${{ steps.plan.outputs.publish }}
+      merge_sha: ${{ steps.plan.outputs.merge_sha }}
+    steps:
+      - name: Confirm merged pull request and source changes
+        id: plan
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const run = context.payload.workflow_run;
+            let candidates = run.pull_requests || [];
+            if (candidates.length === 0) {
+              const associated = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                commit_sha: run.head_sha,
+              });
+              candidates = associated.data;
+            }
+            const candidate = candidates[0];
+            if (!candidate?.number) {
+              core.setOutput('publish', 'false');
+              core.notice('No pull request is associated with this CI run.');
+              return;
+            }
+
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: candidate.number,
+            });
+            if (!pr.merged_at || pr.base.ref !== context.payload.repository.default_branch) {
+              core.setOutput('publish', 'false');
+              core.notice('Only merged pull requests targeting the default branch can publish.');
+              return;
+            }
+
+            const files = await github.paginate(
+              github.rest.pulls.listFiles,
+              {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: pr.number,
+                per_page: 100,
+              },
+              (response) => response.data.map((file) => file.filename),
+            );
+            const sourceFiles = files.filter((file) => (
+              !file.startsWith('.github/')
+              && !file.startsWith('docs/')
+              && !/^README(?:\.|$)/i.test(file)
+              && !/^LICENSE(?:\.|$)/i.test(file)
+              && !/^CHANGELOG(?:\.|$)/i.test(file)
+            ));
+
+            core.setOutput('publish', sourceFiles.length > 0 ? 'true' : 'false');
+            core.setOutput('merge_sha', pr.merge_commit_sha);
+            if (sourceFiles.length === 0) {
+              core.notice('No package source changed; skipping publication.');
+            }
+
+  publish:
+    name: Publish package to CodeArtifact
+    needs: release-plan
+    if: needs.release-plan.outputs.publish == 'true'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: heydu-vitals-package-publish
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Check out merged source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.release-plan.outputs.merge_sha }}
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Require a new package version
+        id: release
+        env:
+          MERGE_SHA: ${{ needs.release-plan.outputs.merge_sha }}
+        run: |
+          BASE_SHA="$(git rev-parse "${MERGE_SHA}^1")"
+          export BASE_SHA
+          node - <<'NODE'
+          const { execFileSync } = require('node:child_process');
+          const current = require('./package.json').version;
+          const base = JSON.parse(execFileSync('git', ['show', `${process.env.BASE_SHA}:package.json`], { encoding: 'utf8' })).version;
+          const parse = (value) => {
+            const match = /^(\d+)\.(\d+)\.(\d+)$/.exec(value || '');
+            if (!match) throw new Error(`Invalid stable semver version: ${value}`);
+            return match.slice(1).map(Number);
+          };
+          const a = parse(current);
+          const b = parse(base);
+          const newer = a.some((part, index) => part > b[index] && a.slice(0, index).every((value, previous) => value === b[previous]));
+          if (!newer) throw new Error(`Version ${current} must be higher than base version ${base}.`);
+          NODE
+          PACKAGE_VERSION="$(node -p 'require("./package.json").version')"
+          echo "package_version=${PACKAGE_VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Skip if a newer package version has already merged
+        id: freshness
+        uses: actions/github-script@v7
+        env:
+          PACKAGE_VERSION: ${{ steps.release.outputs.package_version }}
+        with:
+          script: |
+            const { data: file } = await github.rest.repos.getContent({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              path: 'package.json',
+              ref: context.payload.repository.default_branch,
+            });
+            const latest = JSON.parse(Buffer.from(file.content, 'base64').toString('utf8')).version;
+            const compare = (left, right) => {
+              const a = left.split('.').map(Number);
+              const b = right.split('.').map(Number);
+              for (let i = 0; i < 3; i += 1) if (a[i] !== b[i]) return a[i] > b[i] ? 1 : -1;
+              return 0;
+            };
+            const publish = compare(latest, process.env.PACKAGE_VERSION) <= 0;
+            core.setOutput('publish', String(publish));
+            if (!publish) core.notice(`Skipping stale heydu-vitals@${process.env.PACKAGE_VERSION}; default branch is at ${latest}.`);
+
+      - name: Pack package without running lifecycle scripts
+        run: npm pack --ignore-scripts --pack-destination "$RUNNER_TEMP"
+
+      - name: Configure AWS credentials
+        if: steps.freshness.outputs.publish == 'true'
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::975050238836:role/heydu-github-actions-heydu-vitals-publish
+          aws-region: ap-south-1
+          role-session-name: HeyduVitalsPublish
+
+      - name: Publish new version
+        if: steps.freshness.outputs.publish == 'true'
+        env:
+          PACKAGE_VERSION: ${{ steps.release.outputs.package_version }}
+        run: |
+          if aws codeartifact describe-package-version \
+            --domain heydu --domain-owner 975050238836 \
+            --repository heydu-vitals --format npm --package heydu-vitals \
+            --package-version "$PACKAGE_VERSION" --region ap-south-1 >/dev/null 2>&1; then
+            echo "heydu-vitals@$PACKAGE_VERSION is already published; skipping duplicate workflow run."
+            exit 0
+          fi
+          aws codeartifact login --tool npm --repository heydu-vitals \
+            --domain heydu --domain-owner 975050238836 --region ap-south-1
+          TARBALL="$RUNNER_TEMP/heydu-vitals-${PACKAGE_VERSION}.tgz"
+          test -f "$TARBALL"
+          npm publish "$TARBALL" --ignore-scripts \
+            --registry "https://heydu-975050238836.d.codeartifact.ap-south-1.amazonaws.com/npm/heydu-vitals/"

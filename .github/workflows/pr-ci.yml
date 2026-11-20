@@ -1,0 +1,60 @@
+name: PR CI
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited, labeled, closed]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  validate:
+    name: Validate package changes
+    if: github.event.action != 'closed' || github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out pull request merge ref
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Validate package version and lockfile
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+          EVENT_PATH: ${{ github.event_path }}
+        run: node .github/scripts/validate-package-release.js
+
+      - name: Collect changed JavaScript files
+        id: changed-files
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const files = await github.paginate(
+              github.rest.pulls.listFiles,
+              {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: context.payload.pull_request.number,
+                per_page: 100,
+              },
+              (response) => response.data.map((file) => file.filename),
+            );
+            core.setOutput('files', JSON.stringify(files.filter((file) => file.endsWith('.js'))));
+
+      - name: Check JavaScript syntax
+        env:
+          CHANGED_FILES: ${{ steps.changed-files.outputs.files }}
+        run: |
+          node - <<'NODE'
+          const { execFileSync } = require('node:child_process');
+          const files = JSON.parse(process.env.CHANGED_FILES || '[]');
+          for (const file of files) {
+            execFileSync(process.execPath, ['--check', file], { stdio: 'inherit' });
+          }
+          NODE
